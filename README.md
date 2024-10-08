@@ -56,3 +56,4 @@ _Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios
 pagina web visitadas
 
 https://stackoverflow.com/questions/19663093/apply-gitignore-on-an-existing-repository-already-tracking-large-number-of-file
+https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-8.0&tabs=visual-studio
