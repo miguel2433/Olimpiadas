@@ -13,7 +13,7 @@
 
 **Curso**: 5 ° 7
 
-# BD Spotify
+# Olimpíadas de Programación 2024
 
 _Acá va un parrafo que describa lo que es el proyecto._
 
