@@ -6,7 +6,7 @@ Asegúrate de configurar correctamente tu archivo `appsettings.json` con la cade
 {
   "AllowedHosts": "*",
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=OrganizacionEventosEscolares;User=tuUsuario;Password=tuPassword;"
+    "DefaultConnection": "Server=localhost;Database=5to_OrganizacionEventosEscolares;User=tuUsuario;Password=tuPassword;"
   },
   "Logging": {
     "LogLevel": {
