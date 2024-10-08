@@ -49,3 +49,10 @@ _Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios
 * **Miguel Verdugues** - *Desarrollo* - [Miguel2433](https://github.com/miguel2433)
 
 * **Josu Duran** - *Documentación* - [Magician](https://github.com/JosuGuzman)
+
+
+
+
+pagina web visitadas
+
+https://stackoverflow.com/questions/19663093/apply-gitignore-on-an-existing-repository-already-tracking-large-number-of-file
