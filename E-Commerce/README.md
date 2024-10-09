@@ -1,6 +1,7 @@
 ## Diagrama Beta de la Aplicacion
 
 ```mermaid
+
 erDiagram
     Usuario {
         int UsuarioId PK
@@ -69,6 +70,6 @@ erDiagram
 
 ```
 
-## Diagrama de Entidad Relación (DER)
+## Diagram de Clases
 
-<img src="/Doc/DER MySQL.png">
+<img src="/Doc/Driagrama de Clases.Drawio">
