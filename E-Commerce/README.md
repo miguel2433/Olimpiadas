@@ -1,53 +1,73 @@
-# Diagrama Beta de la Aplicacion 
+## Diagrama Beta de la Aplicacion
+
 ```mermaid
-
 erDiagram
-    
-Cliente {
-string id
-string nombre
-string email }
-    
-Vendedor {
-string idVendedor
-string nombre
-string email }
-    
-Productos {
-string idProducto
-string nombre
-float precio
-string descripcion
-string categoria }
+    Usuario {
+        int UsuarioId PK
+        string Nombre
+        string Apellido
+        string Correo
+        string Contrasena
+        string Direccion
+    }
 
-OrdenesDeCompra {
-string id
-string estado
-string direccionEnvio
-float total }
+    Producto {
+        int ProductoId PK
+        string Nombre
+        string Descripcion
+        double Precio
+        int Stock
+    }
 
-MetodoDePago {
-string id
-string tipo }
+    Categoria {
+        int CategoriaId PK
+        string Nombre
+    }
 
-Envio {
-string id
-string estado
-string metodoEnvio }
+    Vendedor {
+        int VendedorId PK
+        string Nombre
+        string Correo
+        string Direccion
+    }
 
+    Orden {
+        int OrdenId PK
+        string Estado
+        double Total
+        string FechaCreacion
+        string FechaEnvio
+    }
 
-CarritoDeCompras {
-string id }
+    DetalleOrden {
+        int DetalleOrdenId PK
+        int Cantidad
+        double PrecioUnitario
+    }
 
-Cliente ||--o{ CarritoDeCompras : "agrega"
-Cliente ||--o{ OrdenesDeCompra : "realiza"
-    
-Vendedor ||--o{ Productos : "publica"
-Vendedor ||--o{ OrdenesDeCompra : "gestiona"
+    Pago {
+        int PagoId PK
+        string Metodo
+        string Estado
+        string FechaPago
+    }
 
-Productos ||--o{ OrdenesDeCompra : "incluye"
-OrdenesDeCompra ||--o{ MetodoDePago : "utiliza"
-OrdenesDeCompra ||--o{ Envio : "se envía por"
-CarritoDeCompras ||--o{ Productos : "contiene"
-Productos ||--o{ CategoriasDeProductos : "pertenece a"
+    Envio {
+        int EnvioId PK
+        string DireccionEnvio
+        string EstadoEnvio
+        string FechaEnvio
+    }
+
+    Usuario ||--o{ Orden : "hace"
+    Orden ||--|{ DetalleOrden : "contiene"
+    Producto ||--o{ DetalleOrden : "asociado a"
+    Categoria ||--o{ Producto : "clasifica"
+    Vendedor ||--o{ Producto : "vende"
+    Orden ||--o{ Pago : "paga"
+    Orden ||--o{ Envio : "tiene"
+
 ```
+
+## Diagrama de Entidad Relación (DER)
+
