@@ -71,3 +71,4 @@ erDiagram
 
 ## Diagrama de Entidad Relación (DER)
 
+<img src="/Doc/DER MySQL.png">
