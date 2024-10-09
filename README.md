@@ -42,7 +42,6 @@ _Menciona las herramientas y versiones que utilizaste para crear tu proyecto_
 
 ## Autores ✒️
 
-_Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios_
 
 * **Leonardo Cheg** - *Desarrollo* - [Leonardo](https://github.com/ChengLeonardo)
 
