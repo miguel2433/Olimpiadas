@@ -27,7 +27,9 @@ https://github.com/miguel2433/Olimpiadas.git
 
 ### Pre-requisitos 📋
 
-- .NET 8 (SDK .NET 8.0.105) - [Descargar](https://dotnet.microsoft.com/es-es/download/dotnet/8.0)
+- **.NET 8** (SDK .NET 8.0.105) - [Descargar](https://dotnet.microsoft.com/es-es/download/dotnet/8.0)
+
+- **MySQL** - [Descargar](https://dev.mysql.com/downloads/installer/)
 
 ## Despliegue 📦
 
@@ -50,9 +52,10 @@ _Menciona las herramientas y versiones que utilizaste para crear tu proyecto_
 * **Josu Duran** - *Documentación* - [Magician](https://github.com/JosuGuzman)
 
 
+## Paginas Web Visitadas
+*Estas son las Paginas Web que Usamos para crear el Proyecto:*
 
+- Stack Overflow *[➤](https://stackoverflow.com/questions/19663093/apply-gitignore-on-an-existing-repository-already-tracking-large-number-of-file)*
 
-pagina web visitadas
+- Microsoft - AI Skills Challenge *[➤](https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-8.0&tabs=visual-studio)*
 
-https://stackoverflow.com/questions/19663093/apply-gitignore-on-an-existing-repository-already-tracking-large-number-of-file
-https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-8.0&tabs=visual-studio

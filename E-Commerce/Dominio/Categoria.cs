@@ -1,4 +1,5 @@
 namespace E_Commerce.Dominio;
+using System.ComponentModel.DataAnnotations;
 
 public class Categoria
 {
@@ -8,3 +9,4 @@ public class Categoria
     public string Nombre { get; set; }
     public string? Descripcion { get; set; }
     public List<Producto> Productos { get; set; }
+}
