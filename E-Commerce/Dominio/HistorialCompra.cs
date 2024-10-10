@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,5 +14,7 @@ namespace E_Commerce.Dominio
         [Required]
         public Carrito Carrito { get; set; }
         public bool Eliminado { get; set; } = false;
+        [ForeignKey("CarritoId")]
+        public Guid CarritoId { get; set; }
     }
 }
