@@ -17,7 +17,7 @@ public class UsuarioService : IUsuarioService
         _context.SaveChanges();
     }
 
-    public void DeleteUsuario(int id)
+    public void DeleteUsuario(Guid id)
     {
         var usuario = _context.Usuario.Find(id);
         if (usuario != null)
@@ -32,7 +32,7 @@ public class UsuarioService : IUsuarioService
         return _context.Usuario.ToList();
     }
 
-    public void UpdateUsuario(int id, Usuario usuario)
+    public void UpdateUsuario(Guid id, Usuario usuario)
     {
         var usuarioExistente = _context.Usuario.Find(id);
         if (usuarioExistente != null)
@@ -46,7 +46,7 @@ public class UsuarioService : IUsuarioService
 public interface IUsuarioService
 {
     void AddUsuario(Usuario usuario);
-    void DeleteUsuario(int id);
+    void DeleteUsuario(Guid id);
     object? GetUsuarios();
-    void UpdateUsuario(int id, Usuario usuario);
+    void UpdateUsuario(Guid id, Usuario usuario);
 }

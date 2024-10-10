@@ -22,7 +22,7 @@ namespace Api.Funcionalidades.Categorias
             _context.SaveChanges();
         }
 
-        public void DeleteCategoria(int id)
+        public void DeleteCategoria(Guid id)
         {
             var categoria = _context.Categoria.Find(id);
             if (categoria != null)
@@ -37,7 +37,7 @@ namespace Api.Funcionalidades.Categorias
             return _context.Categoria.ToList();
         }
 
-        public void UpdateCategoria(int id, Categoria categoria)
+        public void UpdateCategoria(Guid id, Categoria categoria)
         {
             var categoriaExistente = _context.Categoria.Find(id);
             if (categoriaExistente != null)
@@ -51,8 +51,8 @@ namespace Api.Funcionalidades.Categorias
     public interface ICategoriaService
     {
         void AddCategoria(Categoria categoria);
-        void UpdateCategoria(int id, Categoria categoria);
-        void DeleteCategoria(int id);
+        void UpdateCategoria(Guid id, Categoria categoria);
+        void DeleteCategoria(Guid id);
         List<Categoria> GetCategorias();
     }
 }

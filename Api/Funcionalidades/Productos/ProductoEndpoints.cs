@@ -23,13 +23,13 @@ namespace Api.Funcionalidades.Productos
                 return Results.Ok(producto);
             });
             
-            app.MapPut("/api/producto/{id}", ([FromServices] IProductoService productoService, int id, Producto producto) =>
+            app.MapPut("/api/producto/{id}", ([FromServices] IProductoService productoService, Guid id, Producto producto) =>
             {
                 productoService.UpdateProducto(id, producto);
                 return Results.Ok(producto);
             });
             
-            app.MapDelete("/api/producto/{id}", ([FromServices] IProductoService productoService, int id) =>
+            app.MapDelete("/api/producto/{id}", ([FromServices] IProductoService productoService, Guid id) =>
             {
                 productoService.DeleteProducto(id);
                 return Results.Ok();

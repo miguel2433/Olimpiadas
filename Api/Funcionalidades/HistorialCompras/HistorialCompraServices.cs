@@ -21,7 +21,7 @@ namespace Api.Funcionalidades.HistorialCompras
             _context.SaveChanges();
         }
 
-        public void DeleteHistorialCompra(int id)
+        public void DeleteHistorialCompra(Guid id)
         {
             var historialCompra = _context.HistorialCompra.Find(id);
             if (historialCompra != null)
@@ -36,7 +36,7 @@ namespace Api.Funcionalidades.HistorialCompras
             return _context.HistorialCompra.ToList();
         }
 
-        public void UpdateHistorialCompra(int id, HistorialCompra historialCompra)
+        public void UpdateHistorialCompra(Guid id, HistorialCompra historialCompra)
         {
             var historialCompraExistente = _context.HistorialCompra.Find(id);
             if (historialCompraExistente != null)
@@ -51,7 +51,7 @@ namespace Api.Funcionalidades.HistorialCompras
     {
         List<HistorialCompra> GetHistorialCompra();
         void AddHistorialCompra(HistorialCompra historialCompra);
-        void UpdateHistorialCompra(int id, HistorialCompra historialCompra);
-        void DeleteHistorialCompra(int id);
+        void UpdateHistorialCompra(Guid id, HistorialCompra historialCompra);
+        void DeleteHistorialCompra(Guid id);
     }
 }

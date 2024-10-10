@@ -18,7 +18,7 @@ public class ProductoService : IProductoService
         _context.SaveChanges();
     }
 
-    public void DeleteProducto(int id)
+    public void DeleteProducto(Guid id)
     {
         var producto = _context.Producto.Find(id);
         if (producto != null)
@@ -33,7 +33,7 @@ public class ProductoService : IProductoService
         return _context.Producto.ToList();
     }
 
-    public void UpdateProducto(int id, Producto producto)
+    public void UpdateProducto(Guid id, Producto producto)
     {
         var productoExistente = _context.Producto.Find(id);
         if (productoExistente != null)
@@ -49,7 +49,7 @@ public class ProductoService : IProductoService
 public interface IProductoService
 {
     void AddProducto(Producto producto);
-    void DeleteProducto(int id);
+    void DeleteProducto(Guid id);
     object? GetProductos();
-    void UpdateProducto(int id, Producto producto);
+    void UpdateProducto(Guid id, Producto producto);
 }

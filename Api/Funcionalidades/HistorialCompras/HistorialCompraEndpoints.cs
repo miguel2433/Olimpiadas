@@ -22,12 +22,12 @@ namespace Api.Funcionalidades.HistorialCompras
                 historialCompraService.AddHistorialCompra(historialCompra);
                 return Results.Ok(historialCompra);
             }); 
-            app.MapPut("/api/historial-compra/{id}", ([FromServices] IHistorialCompraServices historialCompraService, int id, HistorialCompra historialCompra) =>
+            app.MapPut("/api/historial-compra/{id}", ([FromServices] IHistorialCompraServices historialCompraService, Guid id, HistorialCompra historialCompra) =>
             {
                 historialCompraService.UpdateHistorialCompra(id, historialCompra);
                 return Results.Ok(historialCompra);
             });
-            app.MapDelete("/api/historial-compra/{id}", ([FromServices] IHistorialCompraServices historialCompraService, int id) =>
+            app.MapDelete("/api/historial-compra/{id}", ([FromServices] IHistorialCompraServices historialCompraService, Guid id) =>
             {
                 historialCompraService.DeleteHistorialCompra(id);
                 return Results.Ok();

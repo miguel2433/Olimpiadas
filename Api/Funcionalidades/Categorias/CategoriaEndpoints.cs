@@ -16,12 +16,12 @@ public class CategoriaEndpoints : ICarterModule
             categoriaService.AddCategoria(categoria);
             return Results.Ok(categoria);
         }); 
-        app.MapPut("/api/categoria/{id}", ([FromServices] ICategoriaService categoriaService, int id, Categoria categoria) =>
+        app.MapPut("/api/categoria/{id}", ([FromServices] ICategoriaService categoriaService, Guid id, Categoria categoria) =>
         {
             categoriaService.UpdateCategoria(id, categoria);
             return Results.Ok(categoria);
         });
-        app.MapDelete("/api/categoria/{id}", ([FromServices] ICategoriaService categoriaService, int id) =>
+        app.MapDelete("/api/categoria/{id}", ([FromServices] ICategoriaService categoriaService, Guid id) =>
         {
             categoriaService.DeleteCategoria(id);
             return Results.Ok();

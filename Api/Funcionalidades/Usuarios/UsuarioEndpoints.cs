@@ -19,13 +19,13 @@ namespace Api.Funcionalidades.Usuarios
                 return Results.Ok(usuario);
             });
             
-            app.MapPut("/api/usuario/{id}", ([FromServices] IUsuarioService usuarioService, int id, Usuario usuario) =>
+            app.MapPut("/api/usuario/{id}", ([FromServices] IUsuarioService usuarioService, Guid id, Usuario usuario) =>
             {
                 usuarioService.UpdateUsuario(id, usuario);
                 return Results.Ok(usuario);
             });
             
-            app.MapDelete("/api/usuario/{id}", ([FromServices] IUsuarioService usuarioService, int id) =>
+            app.MapDelete("/api/usuario/{id}", ([FromServices] IUsuarioService usuarioService, Guid id) =>
             {
                 usuarioService.DeleteUsuario(id);
                 return Results.Ok();

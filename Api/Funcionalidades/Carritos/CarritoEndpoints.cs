@@ -17,12 +17,12 @@ public class CarritoEndpoints : ICarterModule
             carritoService.AddCarrito(carrito);
             return Results.Ok(carrito);
         }); 
-        app.MapPut("/api/carrito/{id}", ([FromServices] ICarritoService carritoService, int id, Carrito carrito) =>
+        app.MapPut("/api/carrito/{id}", ([FromServices] ICarritoService carritoService, Guid id, Carrito carrito) =>
         {
             carritoService.UpdateCarrito(id, carrito);
             return Results.Ok(carrito);
         });
-        app.MapDelete("/api/carrito/{id}", ([FromServices] ICarritoService carritoService, int id) =>
+        app.MapDelete("/api/carrito/{id}", ([FromServices] ICarritoService carritoService, Guid id) =>
         {
             carritoService.DeleteCarrito(id);
             return Results.Ok();

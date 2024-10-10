@@ -18,7 +18,7 @@ public class CarritoService : ICarritoService
         _context.SaveChanges();
     }
 
-    public void DeleteCarrito(int id)
+    public void DeleteCarrito(Guid id)
     {
         var carrito = _context.Carrito.Find(id);
         if (carrito != null)
@@ -33,7 +33,7 @@ public class CarritoService : ICarritoService
         return _context.Carrito.ToList();
     }
 
-    public void UpdateCarrito(int id, Carrito carrito)
+    public void UpdateCarrito(Guid id, Carrito carrito)
     {
         var carritoExistente = _context.Carrito.Find(id);
         if (carritoExistente != null)
@@ -47,7 +47,7 @@ public class CarritoService : ICarritoService
 public interface ICarritoService
 {
     void AddCarrito(Carrito carrito);
-    void DeleteCarrito(int id);
+    void DeleteCarrito(Guid id);
     List<Carrito> GetCarrito();
-    void UpdateCarrito(int id, Carrito carrito);
+    void UpdateCarrito(Guid id, Carrito carrito);
 }
