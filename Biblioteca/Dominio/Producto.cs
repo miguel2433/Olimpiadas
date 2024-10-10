@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Biblioteca.Dominio;
-
+[Table("Producto")]
 public class Producto
 {
     [Key]

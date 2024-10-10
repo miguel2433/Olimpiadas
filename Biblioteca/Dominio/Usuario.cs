@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-namespace Biblioteca.Dominio;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Biblioteca.Dominio;
+[Table("Usuario")]
 public class Usuario
 {
     [Key]

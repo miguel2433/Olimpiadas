@@ -1,3 +1,5 @@
+using Api.Funcionalidades.Carritos;
+
 namespace Api.Funcionalidades;
 
 public static class ServiceManager

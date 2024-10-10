@@ -1,5 +1,7 @@
 using Api.Funcionalidades;
+using Api.Persistencia;
 using Carter;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,16 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddServices();
 builder.Services.AddCarter();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
+builder.Services.AddDbContext<AppDbContext>();
+var options = new DbContextOptionsBuilder<AppDbContext>()
+    .UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")))
+    .Options;
+
+var context = new AppDbContext(options);
+
+context.Database.EnsureCreated();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

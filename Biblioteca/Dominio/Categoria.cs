@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Biblioteca.Dominio;
-
+[Table("Categoria")]
 public class Categoria
 {
     [Key]
