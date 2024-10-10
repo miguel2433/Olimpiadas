@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+namespace Api.Funcionalidades.Categorias;
 
-namespace Api.Funcionalidades.Categorias
+public class CategoriaEndpoints
 {
-    public class CategoriaEndpoints
-    {
-        
-    }
+    
 }
