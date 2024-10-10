@@ -1,26 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Persistencia;
 using Biblioteca.Dominio;
 
-namespace Api.Funcionalidades.Categorias
+namespace Api.Funcionalidades.Categorias;
+
+public class CategoriaService : ICategoriaService
 {
-    public class CategoriaService : ICategoriaService
+    private readonly AppDbContext _context;
+
+    public CategoriaService(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public CategoriaService(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public void AddCategoria(Categoria categoria)
-        {
-            _context.Categoria.Add(categoria);
-            _context.SaveChanges();
-        }
+    public void AddCategoria(Categoria categoria)
+    {
+        _context.Categoria.Add(categoria);
+        _context.SaveChanges();
+    }
 
         public void DeleteCategoria(Guid id)
         {
@@ -32,10 +28,10 @@ namespace Api.Funcionalidades.Categorias
             }
         }
 
-        public List<Categoria> GetCategorias()
-        {
-            return _context.Categoria.ToList();
-        }
+    public List<Categoria> GetCategorias()
+    {
+        return _context.Categoria.ToList();
+    }
 
         public void UpdateCategoria(Guid id, Categoria categoria)
         {

@@ -1,6 +1,5 @@
 using Api.Persistencia;
 using Biblioteca.Dominio;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Funcionalidades.Carritos;
 

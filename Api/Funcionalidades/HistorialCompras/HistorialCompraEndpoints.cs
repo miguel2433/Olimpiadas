@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Api.Funcionalidades.HistorialCompras;
 using Biblioteca.Dominio;
 using Carter;
 using Microsoft.AspNetCore.Mvc;

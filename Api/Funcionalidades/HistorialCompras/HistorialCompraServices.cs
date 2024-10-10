@@ -1,25 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Persistencia;
 using Biblioteca.Dominio;
-namespace Api.Funcionalidades.HistorialCompras
+namespace Api.Funcionalidades.HistorialCompras;
+
+public class HistorialCompraServices : IHistorialCompraServices
 {
-    public class HistorialCompraServices : IHistorialCompraServices
+    private readonly AppDbContext _context;
+
+    public HistorialCompraServices(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public HistorialCompraServices(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public void AddHistorialCompra(HistorialCompra historialCompra)
-        {
-            _context.HistorialCompra.Add(historialCompra);
-            _context.SaveChanges();
-        }
+    public void AddHistorialCompra(HistorialCompra historialCompra)
+    {
+        _context.HistorialCompra.Add(historialCompra);
+        _context.SaveChanges();
+    }
 
         public void DeleteHistorialCompra(Guid id)
         {
@@ -31,10 +27,10 @@ namespace Api.Funcionalidades.HistorialCompras
             }
         }
 
-        public List<HistorialCompra> GetHistorialCompra()
-        {
-            return _context.HistorialCompra.ToList();
-        }
+    public List<HistorialCompra> GetHistorialCompra()
+    {
+        return _context.HistorialCompra.ToList();
+    }
 
         public void UpdateHistorialCompra(Guid id, HistorialCompra historialCompra)
         {
