@@ -1,58 +1,53 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Persistencia;
 using Biblioteca.Dominio;
 
-namespace Api.Funcionalidades.Categorias
+namespace Api.Funcionalidades.Categorias;
+
+public class CategoriaService : ICategoriaService
 {
-    public class CategoriaService : ICategoriaService
+    private readonly AppDbContext _context;
+
+    public CategoriaService(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public CategoriaService(AppDbContext context)
-        {
-            _context = context;
-        }
+    public void AddCategoria(Categoria categoria)
+    {
+        _context.Categoria.Add(categoria);
+        _context.SaveChanges();
+    }
 
-        public void AddCategoria(Categoria categoria)
+    public void DeleteCategoria(int id)
+    {
+        var categoria = _context.Categoria.Find(id);
+        if (categoria != null)
         {
-            _context.Categoria.Add(categoria);
+            _context.Categoria.Remove(categoria);
             _context.SaveChanges();
         }
-
-        public void DeleteCategoria(int id)
-        {
-            var categoria = _context.Categoria.Find(id);
-            if (categoria != null)
-            {
-                _context.Categoria.Remove(categoria);
-                _context.SaveChanges();
-            }
-        }
-
-        public List<Categoria> GetCategorias()
-        {
-            return _context.Categoria.ToList();
-        }
-
-        public void UpdateCategoria(int id, Categoria categoria)
-        {
-            var categoriaExistente = _context.Categoria.Find(id);
-            if (categoriaExistente != null)
-            {
-                _context.Categoria.Update(categoria);
-                _context.SaveChanges();
-            }
-        }
     }
 
-    public interface ICategoriaService
+    public List<Categoria> GetCategorias()
     {
-        void AddCategoria(Categoria categoria);
-        void UpdateCategoria(int id, Categoria categoria);
-        void DeleteCategoria(int id);
-        List<Categoria> GetCategorias();
+        return _context.Categoria.ToList();
     }
+
+    public void UpdateCategoria(int id, Categoria categoria)
+    {
+        var categoriaExistente = _context.Categoria.Find(id);
+        if (categoriaExistente != null)
+        {
+            _context.Categoria.Update(categoria);
+            _context.SaveChanges();
+        }
+    }
+}
+
+public interface ICategoriaService
+{
+    void AddCategoria(Categoria categoria);
+    void UpdateCategoria(int id, Categoria categoria);
+    void DeleteCategoria(int id);
+    List<Categoria> GetCategorias();
 }
