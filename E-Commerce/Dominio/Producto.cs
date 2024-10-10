@@ -14,5 +14,7 @@ public class Producto
     [Required]
     public int Stock { get; set; }  
     public string? UrlImagen { get; set; }
+    [Required]
     public Categoria Categoria { get; set; }
+    public bool Eliminado { get; set; } = false;
 }
