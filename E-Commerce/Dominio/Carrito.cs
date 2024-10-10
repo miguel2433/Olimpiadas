@@ -13,5 +13,6 @@ public class Carrito
     public Usuario Usuario { get; set; }
     public List<Producto> Productos { get; set; } = new List<Producto>();
     public decimal Total { get; set; }
+    public bool Entregado { get; set; } = false;
     public bool Eliminado { get; set; } = false;
 }
