@@ -79,6 +79,8 @@ erDiagram
 
 ## Diagram de Clases
 
+<img src="/Doc/Driagrama de Clases.png">
+
 ```mermaid
 
 classDiagram
