@@ -1,7 +1,7 @@
-using E_Commerce.Dominio.Carrito;
+using Biblioteca.Dominio;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Funcionalidades.Carrito;
+namespace Api.Funcionalidades.Carritos;
 
 public class CarritoService : ICarritoService
 {

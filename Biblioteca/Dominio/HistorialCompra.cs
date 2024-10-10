@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Dominio
+namespace Biblioteca.Dominio
 {
     public class HistorialCompra
     {

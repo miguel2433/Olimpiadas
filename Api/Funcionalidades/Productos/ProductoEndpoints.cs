@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Api.Funcionalidades.Producto
+namespace Api.Funcionalidades.Productos
 {
     public class ProductoEndpoints
     {

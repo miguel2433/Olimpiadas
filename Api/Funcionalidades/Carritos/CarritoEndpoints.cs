@@ -1,7 +1,7 @@
 using Carter;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Funcionalidades.Carrito;
+namespace Api.Funcionalidades.Carritos;
 
 public class CarritoEndpoints : ICarterModule
 {

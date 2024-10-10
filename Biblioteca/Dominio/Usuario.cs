@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace E_Commerce.Dominio;
+namespace Biblioteca.Dominio;
 
 public class Usuario
 {
