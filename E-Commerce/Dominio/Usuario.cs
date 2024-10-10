@@ -9,8 +9,14 @@ public class Usuario
     [Required]
     public string Nombre { get; set; }
     [Required]
+    public string NombreUsuario { get; set; }
+    [Required]
+    public string Apellido { get; set; }
+    [Required]
     public string Email { get; set; }
     [Required]
     public string Password { get; set; }
-    public List<Carrito> Carrito { get; set; }
+    public string Telefono { get; set; } = string.Empty;
+    public List<Carrito>? Carrito { get; set; }
+    public bool Eliminado { get; set; } = false;
 }
