@@ -4,12 +4,12 @@ namespace Api.Persistencia;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<Carrito> Carrito { get; set; }
+        public DbSet<Carrito> Carrito { get; set; }
     public DbSet<Producto> Producto { get; set; }
     public DbSet<Usuario> Usuario { get; set; }
     public DbSet<Categoria> Categoria { get; set; }
+    public DbSet<HistorialCompra> HistorialCompra { get; set; }
     
-
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
@@ -20,6 +20,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Producto>().ToTable("Producto");
         modelBuilder.Entity<Usuario>().ToTable("Usuario");
         modelBuilder.Entity<Categoria>().ToTable("Categoria");
+        modelBuilder.Entity<HistorialCompra>().ToTable("HistorialCompra");
     }
 
 }
