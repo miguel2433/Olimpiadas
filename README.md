@@ -25,21 +25,50 @@ Clonar el repositorio github, desde Github Desktop o ejecutar en la terminal o C
 https://github.com/miguel2433/Olimpiadas.git
 ```
 
-### Pre-requisitos 📋
-
-- **.NET 8** (SDK .NET 8.0.105) - [Descargar](https://dotnet.microsoft.com/es-es/download/dotnet/8.0)
-
-- **MySQL** - [Descargar](https://dev.mysql.com/downloads/installer/)
-
-## Despliegue 📦
-
-_Agrega notas adicionales sobre que cosas se debe instalar, configurar y como hacer deploy_
 
 ## Construido con 🛠️
 
-_Menciona las herramientas y versiones que utilizaste para crear tu proyecto_
+_Las siguientes herramientas y tecnologías fueron utilizadas para crear este proyecto:_
 
-* [Visual Studio Code](https://code.visualstudio.com/#alt-downloads) - Editor de código.
+* [.NET 8](https://dotnet.microsoft.com/es-es/download/dotnet/8.0) - Framework de desarrollo
+* [ASP.NET Core](https://docs.microsoft.com/es-es/aspnet/core/) - Framework web
+* [Entity Framework Core](https://docs.microsoft.com/es-es/ef/core/) - ORM para acceso a datos
+* [MySQL](https://www.mysql.com/) - Sistema de gestión de bases de datos
+* [Carter](https://github.com/CarterCommunity/Carter) - Biblioteca para simplificar la definición de endpoints
+* [Swagger](https://swagger.io/) - Herramienta para documentación de API
+* [Visual Studio Code](https://code.visualstudio.com/) - Editor de código
+
+## Despliegue 📦
+
+Para desplegar este proyecto, sigue estos pasos:
+
+1. Asegúrate de tener instalados todos los pre-requisitos mencionados abajo. [Pre-requisitos](#pre-requisitos)
+2. Clona el repositorio en tu máquina local.
+3. Navega hasta la carpeta `Api` en la terminal.
+4. Ejecuta `dotnet restore` para restaurar las dependencias del proyecto.
+5. Configura la cadena de conexión a la base de datos MySQL en el archivo `appsettings.json`.
+6. Ejecuta `dotnet ef database update` para aplicar las migraciones y crear la base de datos.
+7. Finalmente, ejecuta `dotnet run` para iniciar la aplicación.
+
+La API estará disponible en `https://localhost:5001` por defecto.
+
+### Pre-requisitos 📋
+
+Antes de comenzar, asegúrate de tener instalado lo siguiente:
+
+- **.NET 8 SDK** (versión 8.0.105 o superior) - [Descargar](https://dotnet.microsoft.com/es-es/download/dotnet/8.0)
+- **MySQL** (versión 8.0 o superior) - [Descargar](https://dev.mysql.com/downloads/installer/)
+- **Visual Studio Code** (última versión estable) - [Descargar](https://code.visualstudio.com/#alt-downloads)
+
+Además, necesitarás instalar las siguientes herramientas y paquetes:
+
+- **Entity Framework Core CLI** - Instalar globalmente con el comando:
+  ```
+  dotnet tool install --global dotnet-ef
+  ```
+- **Carter** - Se instalará automáticamente al restaurar las dependencias del proyecto.
+
+Asegúrate de tener una instancia de MySQL en ejecución y de configurar correctamente la cadena de conexión en el archivo `appsettings.json` antes de ejecutar la aplicación.
 
 
 ## Autores ✒️
