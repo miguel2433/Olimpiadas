@@ -18,37 +18,36 @@ public class CategoriaService : ICategoriaService
         _context.SaveChanges();
     }
 
-        public void DeleteCategoria(Guid id)
+    public void DeleteCategoria(Guid id)
+    {
+        var categoria = _context.Categoria.Find(id);
+        if (categoria != null)
         {
-            var categoria = _context.Categoria.Find(id);
-            if (categoria != null)
-            {
-                _context.Categoria.Remove(categoria);
-                _context.SaveChanges();
-            }
+            _context.Categoria.Remove(categoria);
+            _context.SaveChanges();
         }
+    }
 
     public List<Categoria> GetCategorias()
     {
         return _context.Categoria.ToList();
     }
 
-        public void UpdateCategoria(Guid id, Categoria categoria)
+    public void UpdateCategoria(Guid id, Categoria categoria)
+    {
+        var categoriaExistente = _context.Categoria.Find(id);
+        if (categoriaExistente != null)
         {
-            var categoriaExistente = _context.Categoria.Find(id);
-            if (categoriaExistente != null)
-            {
-                _context.Categoria.Update(categoria);
-                _context.SaveChanges();
-            }
+            _context.Categoria.Update(categoria);
+            _context.SaveChanges();
         }
     }
+}
 
-    public interface ICategoriaService
-    {
-        void AddCategoria(Categoria categoria);
-        void UpdateCategoria(Guid id, Categoria categoria);
-        void DeleteCategoria(Guid id);
-        List<Categoria> GetCategorias();
-    }
+public interface ICategoriaService
+{
+    void AddCategoria(Categoria categoria);
+    void UpdateCategoria(Guid id, Categoria categoria);
+    void DeleteCategoria(Guid id);
+    List<Categoria> GetCategorias();
 }

@@ -35,19 +35,18 @@ public class HistorialCompraServices : IHistorialCompraServices
         public void UpdateHistorialCompra(Guid id, HistorialCompra historialCompra)
         {
             var historialCompraExistente = _context.HistorialCompra.Find(id);
-            if (historialCompraExistente != null)
-            {
-                historialCompraExistente = historialCompra;
-                _context.SaveChanges();
-            }
+        if (historialCompraExistente != null)
+        {
+            historialCompraExistente = historialCompra;
+            _context.SaveChanges();
         }
     }
-
-    public interface IHistorialCompraServices
-    {
-        List<HistorialCompra> GetHistorialCompra();
-        void AddHistorialCompra(HistorialCompra historialCompra);
-        void UpdateHistorialCompra(Guid id, HistorialCompra historialCompra);
-        void DeleteHistorialCompra(Guid id);
-    }
+}
+    
+public interface IHistorialCompraServices
+{
+    List<HistorialCompra> GetHistorialCompra();
+    void AddHistorialCompra(HistorialCompra historialCompra);
+    void UpdateHistorialCompra(Guid id, HistorialCompra historialCompra);
+    void DeleteHistorialCompra(Guid id);
 }

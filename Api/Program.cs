@@ -3,7 +3,7 @@ using Api.Funcionalidades;
 using Api.Persistencia;
 using Carter;
 using Microsoft.EntityFrameworkCore;
-
+using Scalar.AspNetCore;
 // Crear el constructor de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,8 +47,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     // Habilitar Swagger en entorno de desarrollo
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(options =>
+    {
+        options.RouteTemplate = "openapi/{documentName}.json";
+    });
+    app.MapScalarApiReference();
 }
 
 // Mapear las rutas definidas con Carter
