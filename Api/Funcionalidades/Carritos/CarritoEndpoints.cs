@@ -27,6 +27,29 @@ public class CarritoEndpoints : ICarterModule
             carritoService.DeleteCarrito(id);
             return Results.Ok();
         });
+        app.MapGet("/api/carrito/producto/{id}", ([FromServices] ICarritoService carritoService, Guid id) =>
+        {
+            var carrito = carritoService.BuscarCarritoPorProducto(id);
+            if (carrito != null)
+            {
+                return Results.Ok(carrito);
+            }
+            return Results.NotFound();
+        });
+        app.MapPut("/api/carrito/{id}/entregado", ([FromServices] ICarritoService carritoService, Guid id) =>
+        {
+            carritoService.MarcarComoEntregado(id);
+            return Results.Ok();
+        });
+        app.MapGet("/api/carrito/{id}/total", ([FromServices] ICarritoService carritoService, Guid id) =>
+        {
+            var total = carritoService.CalcularTotal(id);
+            return Results.Ok(total);
+        });
+        app.MapPut("/api/carrito/{id}/eliminado", ([FromServices] ICarritoService carritoService, Guid id) =>
+        {
+            carritoService.MarcarComoEliminado(id);
+            return Results.Ok();
+        });
     }
-    
 }
