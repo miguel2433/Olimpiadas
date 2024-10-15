@@ -15,7 +15,7 @@ public class RolService : IRolService
 
     public void AddRol(Rol rol)
     {
-        _context.Rol.Add(rol);
+        _context. Rol.Add(rol);
         _context.SaveChanges();
     }
 

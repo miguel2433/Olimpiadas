@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<Usuario> Usuario { get; set; }
     public DbSet<Categoria> Categoria { get; set; }
     public DbSet<HistorialCompra> HistorialCompra { get; set; }
+    public DbSet<Rol> Rol { get; set; }
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -36,6 +37,14 @@ public class AppDbContext : DbContext
             entity.Property(h => h.FechaCompra).IsRequired();
             entity.Property(h => h.Eliminado).IsRequired();
             entity.HasOne(h => h.Carrito).WithMany().HasForeignKey(h => h.CarritoId);
+        });
+
+        modelBuilder.Entity<Rol>(entity =>
+        {
+            entity.ToTable("Rol");
+            entity.HasKey(r => r.Id);
+            entity.Property(r => r.Nombre).IsRequired().HasMaxLength(100);
+            entity.Property(r => r.Descripcion).HasMaxLength(500);
         });
 
     }

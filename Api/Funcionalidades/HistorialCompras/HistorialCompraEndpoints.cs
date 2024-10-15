@@ -8,25 +8,39 @@ namespace Api.Funcionalidades.HistorialCompras
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/historial-compra", ([FromServices] IHistorialCompraServices historialCompraService) =>
+            var group = app.MapGroup("/api/historial-compra")
+                .WithTags("Historial de Compras");
+
+            group.MapGet("", ([FromServices] IHistorialCompraServices historialCompraService) =>
             {
                 return Results.Ok(historialCompraService.GetHistorialCompra());
-            });
-            app.MapPost("/api/historial-compra", ([FromServices] IHistorialCompraServices historialCompraService, HistorialCompra historialCompra) =>
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
+
+            group.MapPost("", ([FromServices] IHistorialCompraServices historialCompraService, HistorialCompra historialCompra) =>
             {
                 historialCompraService.AddHistorialCompra(historialCompra);
                 return Results.Ok(historialCompra);
-            }); 
-            app.MapPut("/api/historial-compra/{id}", ([FromServices] IHistorialCompraServices historialCompraService, Guid id, HistorialCompra historialCompra) =>
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
+            
+            group.MapPut("{id}", ([FromServices] IHistorialCompraServices historialCompraService, Guid id, HistorialCompra historialCompra) =>
             {
                 historialCompraService.UpdateHistorialCompra(id, historialCompra);
                 return Results.Ok(historialCompra);
-            });
-            app.MapDelete("/api/historial-compra/{id}", ([FromServices] IHistorialCompraServices historialCompraService, Guid id) =>
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
+            
+            group.MapDelete("{id}", ([FromServices] IHistorialCompraServices historialCompraService, Guid id) =>
             {
                 historialCompraService.DeleteHistorialCompra(id);
                 return Results.Ok();
-            });
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
         }
     }
 }

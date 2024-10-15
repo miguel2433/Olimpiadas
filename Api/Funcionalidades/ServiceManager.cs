@@ -4,6 +4,8 @@ using Api.Funcionalidades.Usuarios;
 using Api.Funcionalidades.Productos;
 using Api.Funcionalidades.Categorias;
 using Api.Funcionalidades.Roles;
+using Api.Funcionalidades.Auth;
+
 namespace Api.Funcionalidades;
 
 public static class ServiceManager
@@ -16,6 +18,7 @@ public static class ServiceManager
         services.AddScoped<IHistorialCompraServices, HistorialCompraServices>();
         services.AddScoped<ICategoriaService, CategoriaService>();
         services.AddScoped<IRolService, RolService>();
+        services.AddScoped<IAuthService, AuthService>();
         return services;
     }
 }

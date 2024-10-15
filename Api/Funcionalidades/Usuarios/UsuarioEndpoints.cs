@@ -8,28 +8,39 @@ namespace Api.Funcionalidades.Usuarios
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/usuario", ([FromServices] IUsuarioService usuarioService) =>
+            var group = app.MapGroup("/api/usuario")
+                .WithTags("Usuarios");
+
+            group.MapGet("", ([FromServices] IUsuarioService usuarioService) =>
             {
                 return Results.Ok(usuarioService.GetUsuarios());
-            });
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
             
-            app.MapPost("/api/usuario", ([FromServices] IUsuarioService usuarioService, Usuario usuario) =>
+            group.MapPost("", ([FromServices] IUsuarioService usuarioService, UsuarioDto usuarioDto) =>
             {
-                usuarioService.AddUsuario(usuario);
-                return Results.Ok(usuario);
-            });
+                usuarioService.AddUsuario(usuarioDto);
+                return Results.Ok(usuarioDto);
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
             
-            app.MapPut("/api/usuario/{id}", ([FromServices] IUsuarioService usuarioService, Guid id, Usuario usuario) =>
+            group.MapPut("{id}", ([FromServices] IUsuarioService usuarioService, Guid id, UsuarioDto usuarioDto) =>
             {
-                usuarioService.UpdateUsuario(id, usuario);
-                return Results.Ok(usuario);
-            });
+                usuarioService.UpdateUsuario(id, usuarioDto);
+                return Results.Ok(usuarioDto);
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
             
-            app.MapDelete("/api/usuario/{id}", ([FromServices] IUsuarioService usuarioService, Guid id) =>
+            group.MapDelete("{id}", ([FromServices] IUsuarioService usuarioService, Guid id) =>
             {
                 usuarioService.DeleteUsuario(id);
                 return Results.Ok();
-            });
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
         }
     }
 }

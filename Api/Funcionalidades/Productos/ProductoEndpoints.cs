@@ -8,28 +8,39 @@ namespace Api.Funcionalidades.Productos
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/producto", ([FromServices] IProductoService productoService) =>
+            var group = app.MapGroup("/api/producto")
+                .WithTags("Productos");
+
+            group.MapGet("", ([FromServices] IProductoService productoService) =>
             {
                 return Results.Ok(productoService.GetProductos());
-            });
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
             
-            app.MapPost("/api/producto", ([FromServices] IProductoService productoService, Producto producto) =>
+            group.MapPost("", ([FromServices] IProductoService productoService, Producto producto) =>
             {
                 productoService.AddProducto(producto);
                 return Results.Ok(producto);
-            });
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
             
-            app.MapPut("/api/producto/{id}", ([FromServices] IProductoService productoService, Guid id, Producto producto) =>
+            group.MapPut("{id}", ([FromServices] IProductoService productoService, Guid id, Producto producto) =>
             {
                 productoService.UpdateProducto(id, producto);
                 return Results.Ok(producto);
-            });
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
             
-            app.MapDelete("/api/producto/{id}", ([FromServices] IProductoService productoService, Guid id) =>
+            group.MapDelete("{id}", ([FromServices] IProductoService productoService, Guid id) =>
             {
                 productoService.DeleteProducto(id);
                 return Results.Ok();
-            });
+            })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
         }
     }
 }
