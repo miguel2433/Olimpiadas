@@ -1,5 +1,6 @@
 using Api.Persistencia;
 using Biblioteca.Dominio;
+
 namespace Api.Funcionalidades.Categorias;
 
 public class CategoriaService : ICategoriaService
@@ -43,7 +44,6 @@ public class CategoriaService : ICategoriaService
     }
 }
 
-<<<<<<< Updated upstream
 public interface ICategoriaService
 {
     void AddCategoria(Categoria categoria);
@@ -51,12 +51,3 @@ public interface ICategoriaService
     void DeleteCategoria(Guid id);
     List<Categoria> GetCategorias();
 }
-=======
-    public interface ICategoriaService
-    {
-        void AddCategoria(Categoria categoria);
-        void UpdateCategoria(Guid id, Categoria categoria);
-        void DeleteCategoria(Guid id);
-        List<Categoria> GetCategorias();
-    }
->>>>>>> Stashed changes
