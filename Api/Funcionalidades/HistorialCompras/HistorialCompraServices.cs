@@ -40,6 +40,7 @@ public class HistorialCompraServices : IHistorialCompraServices
             historialCompraExistente = historialCompra;
             _context.SaveChanges();
         }
+<<<<<<< Updated upstream
     }
 }
     
@@ -50,3 +51,14 @@ public interface IHistorialCompraServices
     void UpdateHistorialCompra(Guid id, HistorialCompra historialCompra);
     void DeleteHistorialCompra(Guid id);
 }
+=======
+}
+
+    public interface IHistorialCompraServices
+    {
+        List<HistorialCompra> GetHistorialCompra();
+        void AddHistorialCompra(HistorialCompra historialCompra);
+        void UpdateHistorialCompra(Guid id, HistorialCompra historialCompra);
+        void DeleteHistorialCompra(Guid id);
+    }
+>>>>>>> Stashed changes
