@@ -4,9 +4,29 @@ using Api.Persistencia;
 using Carter;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 // Crear el constructor de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+    };
+});
 
 // Agregar servicios al contenedor de dependencias
 builder.Services.AddControllers(); // Agregar soporte para controladores
@@ -53,6 +73,8 @@ if (app.Environment.IsDevelopment())
     });
     app.MapScalarApiReference();
 }
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Mapear las rutas definidas con Carter
 app.MapCarter();
@@ -60,9 +82,9 @@ app.MapCarter();
 // Redirigir HTTP a HTTPS
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => Results.Redirect("/scalar/v1"));
+;app.MapGet("/", () => Results.Redirect("/scalar/v1"));
 // Habilitar la autorización
-app.UseAuthorization();
+
 
 // Mapear los controladores
 app.MapControllers();

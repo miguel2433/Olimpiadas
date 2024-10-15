@@ -47,6 +47,11 @@ La configuración de la base de datos y otros parámetros se realiza en el archi
       "Default": "Information",
       "Microsoft.AspNetCore": "Warning"
     }
+  },
+  "JWT": {
+    "Issuer": "https://localhost:5001",
+    "Audience": "https://localhost:5001",
+    "Key": "TuClaveSecreta"
   }
 }
 
