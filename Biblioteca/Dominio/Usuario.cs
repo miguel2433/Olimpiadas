@@ -26,4 +26,6 @@ public class Usuario
     public string Telefono { get; set; } = string.Empty;
     public List<Carrito>? Carrito { get; set; }
     public bool Eliminado { get; set; } = false;
+    [Required]
+    public Rol Rol { get; set; }
 }
