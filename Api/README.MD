@@ -33,7 +33,6 @@ La carpeta @Api está organizada de la siguiente manera:
 La configuración de la base de datos y otros parámetros se realiza en el archivo `appsettings.json`. Asegúrate de configurar correctamente la cadena de conexión:
 
 
-````5:21:Api/README.MD
   ```json
 {
   "AllowedHosts": "*",
