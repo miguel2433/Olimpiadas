@@ -4,6 +4,7 @@ using Api.Persistencia;
 using Carter;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+
 // Crear el constructor de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,12 +22,11 @@ builder.Services.AddCarter();
 
 // Obtener la cadena de conexión de la configuración
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 // Detectar automáticamente la versión de MySQL
 var mySqlVersion = ServerVersion.AutoDetect(connectionString);
 
 // Configurar el contexto de la base de datos
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseMySql(connectionString, mySqlVersion));
 
 // Crear opciones para el contexto de la base de datos
