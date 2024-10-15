@@ -4,6 +4,7 @@ using Api.Persistencia;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015132111_ActualizacionCategoriaYHistorialCompra")]
+    partial class ActualizacionCategoriaYHistorialCompra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,27 +138,6 @@ namespace Api.Migrations
                     b.ToTable("Producto", (string)null);
                 });
 
-            modelBuilder.Entity("Biblioteca.Dominio.Rol", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rol", (string)null);
-                });
-
             modelBuilder.Entity("Biblioteca.Dominio.Usuario", b =>
                 {
                     b.Property<Guid>("Id")
@@ -190,17 +172,12 @@ namespace Api.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<Guid>("RolId")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("Telefono")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RolId");
 
                     b.ToTable("Usuario", (string)null);
                 });
@@ -257,17 +234,6 @@ namespace Api.Migrations
                     b.Navigation("Vendedor");
                 });
 
-            modelBuilder.Entity("Biblioteca.Dominio.Usuario", b =>
-                {
-                    b.HasOne("Biblioteca.Dominio.Rol", "Rol")
-                        .WithMany("Usuarios")
-                        .HasForeignKey("RolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Rol");
-                });
-
             modelBuilder.Entity("CategoriaProducto", b =>
                 {
                     b.HasOne("Biblioteca.Dominio.Categoria", null)
@@ -286,11 +252,6 @@ namespace Api.Migrations
             modelBuilder.Entity("Biblioteca.Dominio.Carrito", b =>
                 {
                     b.Navigation("Productos");
-                });
-
-            modelBuilder.Entity("Biblioteca.Dominio.Rol", b =>
-                {
-                    b.Navigation("Usuarios");
                 });
 
             modelBuilder.Entity("Biblioteca.Dominio.Usuario", b =>
