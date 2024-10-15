@@ -9,7 +9,7 @@ public class AppDbContext : DbContext
     public DbSet<Usuario> Usuario { get; set; }
     public DbSet<Categoria> Categoria { get; set; }
     public DbSet<HistorialCompra> HistorialCompra { get; set; }
-    
+    public DbSet<Rol> Rol { get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
@@ -21,6 +21,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Usuario>().ToTable("Usuario");
         modelBuilder.Entity<Categoria>().ToTable("Categoria");
         modelBuilder.Entity<HistorialCompra>().ToTable("HistorialCompra");
+        modelBuilder.Entity<Rol>().ToTable("Rol");
     }
 
 }

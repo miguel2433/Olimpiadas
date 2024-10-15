@@ -60,6 +60,7 @@ app.MapCarter();
 // Redirigir HTTP a HTTPS
 app.UseHttpsRedirection();
 
+app.MapGet("/", () => Results.Redirect("/scalar/v1"));
 // Habilitar la autorización
 app.UseAuthorization();
 
