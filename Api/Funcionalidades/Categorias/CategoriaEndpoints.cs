@@ -26,5 +26,27 @@ public class CategoriaEndpoints : ICarterModule
             categoriaService.DeleteCategoria(id);
             return Results.Ok();
         });
+
+        app.MapGet("/api/categoria/buscar", ([FromServices] ICategoriaService categoriaService, string nombre) =>
+        {
+            return Results.Ok(categoriaService.BuscarCategoriasPorNombre(nombre));
+        });
+
+        app.MapPut("/api/categoria/{id}/eliminar", ([FromServices] ICategoriaService categoriaService, Guid id) =>
+        {
+            categoriaService.MarcarCategoriaComoEliminada(id);
+            return Results.Ok();
+        });
+
+        app.MapGet("/api/categoria/{id}/productos", ([FromServices] ICategoriaService categoriaService, Guid id) =>
+        {
+            return Results.Ok(categoriaService.ObtenerProductosDeCategoria(id));
+        });
+
+        app.MapPut("/api/categoria/{id}/descripcion", ([FromServices] ICategoriaService categoriaService, Guid id, string descripcion) =>
+        {
+            categoriaService.ActualizarDescripcionCategoria(id, descripcion);
+            return Results.Ok();
+        });
     }
 }

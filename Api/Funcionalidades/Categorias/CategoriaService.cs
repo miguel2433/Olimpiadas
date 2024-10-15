@@ -42,6 +42,38 @@ public class CategoriaService : ICategoriaService
             _context.SaveChanges();
         }
     }
+
+    public List<Categoria> BuscarCategoriasPorNombre(string nombre)
+    {
+        return _context.Categoria.Where(c => c.Nombre.Contains(nombre)).ToList();
+    }
+
+    public void MarcarCategoriaComoEliminada(Guid id)
+    {
+        var categoria = _context.Categoria.Find(id);
+        if (categoria != null)
+        {
+            categoria.Eliminado = true;
+            _context.SaveChanges();
+        }
+    }
+
+    public List<Producto> ObtenerProductosDeCategoria(Guid id)
+    {
+        var categoria = _context.Categoria.FirstOrDefault(c => c.Id == id);
+        return categoria?.Productos ?? new List<Producto>();
+    }
+
+    public void ActualizarDescripcionCategoria(Guid id, string descripcion)
+    {
+        var categoria = _context.Categoria.Find(id);
+        if (categoria != null)
+        {
+            categoria.Descripcion = descripcion;
+            _context.SaveChanges();
+        }
+    }
+    
 }
 
 public interface ICategoriaService
@@ -50,4 +82,8 @@ public interface ICategoriaService
     void UpdateCategoria(Guid id, Categoria categoria);
     void DeleteCategoria(Guid id);
     List<Categoria> GetCategorias();
+    List<Categoria> BuscarCategoriasPorNombre(string nombre);
+    void MarcarCategoriaComoEliminada(Guid id);
+    List<Producto> ObtenerProductosDeCategoria(Guid id);
+    void ActualizarDescripcionCategoria(Guid id, string descripcion);
 }
