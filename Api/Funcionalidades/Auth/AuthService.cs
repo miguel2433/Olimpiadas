@@ -22,7 +22,7 @@ public class AuthService : IAuthService
 
     public async Task<string> Login(string email, string password)
     {
-        var usuario = await _context.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+        var usuario = await _context.Usuario.Include(u => u.Rol).FirstOrDefaultAsync(u => u.Email == email);
 
         if (usuario == null || !VerifyPassword(password, usuario.Password))
         {
@@ -40,20 +40,21 @@ public class AuthService : IAuthService
 
     private string GenerateJwtToken(Usuario usuario)
     {
+        var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
+        var key = Encoding.ASCII.GetBytes(jwt.Key);
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["JWT:Key"] ?? throw new InvalidOperationException("JWT:Key no está configurado"));
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Rol?.Nombre ?? "Usuario")
+                new Claim(ClaimTypes.Role, usuario.Rol.Nombre ?? "Usuario")
             }),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            Issuer = _configuration["JWT:Issuer"],
-            Audience = _configuration["JWT:Audience"]
+            Issuer = jwt.Issuer,
+            Audience = jwt.Audience
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

@@ -11,7 +11,7 @@ namespace Api.Funcionalidades.Auth
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/api/auth/login", async ([FromBody] LoginRequest loginRequest, [FromServices] IAuthService authService) =>
+            app.MapPost("/api/auth/login", async ([FromServices] IAuthService authService, LoginRequest loginRequest) =>
             {
                 if (string.IsNullOrEmpty(loginRequest.Email) || string.IsNullOrEmpty(loginRequest.Password))
                 {
@@ -31,11 +31,5 @@ namespace Api.Funcionalidades.Auth
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized);
         }
-    }
-
-    public class LoginRequest
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
     }
 }

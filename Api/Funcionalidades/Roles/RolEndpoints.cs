@@ -13,7 +13,7 @@ public class RolEndpoints : ICarterModule
         var group = app.MapGroup("/api/rol")
             .WithTags("Roles");
 
-        group.MapGet("", ([FromServices] IRolService rolService) =>
+        group.MapGet("",([FromServices] IRolService rolService) =>
         {
             return Results.Ok(rolService.GetRoles());
         })

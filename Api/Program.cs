@@ -7,8 +7,18 @@ using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+
 // Crear el constructor de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
+
+// Agregar esta línea para registrar IHttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
+// Agregar servicios al contenedor de dependencias
+builder.Services.AddControllers(); // Agregar soporte para controladores
+builder.Services.AddEndpointsApiExplorer(); // Agregar explorador de endpoints de API
+builder.Services.AddSwaggerGen(); // Agregar generador de documentación Swagge
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -27,11 +37,6 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
     };
 });
-
-// Agregar servicios al contenedor de dependencias
-builder.Services.AddControllers(); // Agregar soporte para controladores
-builder.Services.AddEndpointsApiExplorer(); // Agregar explorador de endpoints de API
-builder.Services.AddSwaggerGen(); // Agregar generador de documentación Swagger
 
 // Agregar servicio de autorización
 builder.Services.AddAuthorization();
@@ -82,7 +87,7 @@ app.MapCarter();
 // Redirigir HTTP a HTTPS
 app.UseHttpsRedirection();
 
-;app.MapGet("/", () => Results.Redirect("/scalar/v1"));
+app.MapGet("/", () => Results.Redirect("/scalar/v1"));
 // Habilitar la autorización
 
 
