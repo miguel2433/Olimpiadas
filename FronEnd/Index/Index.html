@@ -48,22 +48,55 @@
 
     <!--Login y SingUp-->
     <div class="wrapper">
+        <!--Login-->
         <div class="form-box Login">
-            <h1>Login</h1>
+            <h1> Inicia Sesión </h1>
             <form action="#">
                 <div class="input-box">
                     <span class="icon"><ion-icon name="person"></ion-icon></span>
-                    <input type="Usuario" required>
+                    <input type="username" required>
                     <label> Usuario </label>
                 </div>
                 <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="Contraseña" required>
+                    <span class="icon toggle-password">
+                        <ion-icon name="lock-closed"></ion-icon>
+                    </span>
+                    <input type="password" class="password" required>
                     <label> Contraseña </label>
                 </div>
                 <button type="submit" class="btn"> Login </button>
                 <div class="login-register">
                     <p>No tener una Cuenta?<a href="#" class="register-link">Registrate</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!--SingUp-->   
+        <div class="form-box SingUp">
+            <h1> Registrate </h1>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="username" required>
+                    <label> Usuario </label>
+                </div>
+                <div class="input-box">
+                    <span class="icon toggle-password">
+                        <ion-icon name="lock-closed"></ion-icon>
+                    </span>
+                    <input type="password" class="password" required>
+                    <label> Contraseña </label>
+                </div>
+                <div class="input-box">
+                    <span class="icon toggle-password">
+                        <ion-icon name="lock-closed"></ion-icon>
+                    </span>
+                    <input type="password" class="password" required>
+                    <label> Verificar </label>
+                </div>
+                <button type="submit" class="btn"> SingUp </button>
+                <div class="login-register">
+                    <p> Ya tienes una Cuenta? <a href="#" class="login-link">Inicia Sesion</a></p>
                 </div>
             </form>
         </div>

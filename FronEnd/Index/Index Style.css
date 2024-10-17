@@ -88,6 +88,7 @@ header {
     color: #162938;
 }
 
+/* Contenedor principal para el formulario de login y registro */
 .wrapper{
     position: relative;
     width: 400px;
@@ -100,19 +101,54 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    transition: height .2s ease;
 }
 
+/* Ajuste de altura para el formulario de registro */
+.wrapper.active{
+    height: 520px;
+}
+
+/* Estilo general para los formularios */
 .wrapper .form-box{
     width: 100%;
     padding: 40px;
 }
 
+/* Animación para mostrar el formulario de login */
+.wrapper .form-box.Login{
+    transition: transform .18s ease;
+    transform: translateX(0);
+}
+
+/* Animación para ocultar el formulario de login */
+.wrapper.active .form-box.Login{
+    transition: none;
+    transform: translateX(-400px);
+}
+
+/* Posicionamiento inicial del formulario de registro */
+.wrapper .form-box.SingUp{
+    position: absolute;
+    transition: none;
+    transform: translateX(400px);
+}
+
+/* Animación para mostrar el formulario de registro */
+.wrapper.active .form-box.SingUp{
+    transition: transform .18s ease;
+    transform: translateX(0);
+}
+
+/* Estilo para el título del formulario */
 .form-box h1{
     font-size: 2em;
     color: #fff;
     text-align: center;
 }
 
+/* Contenedor para cada campo de entrada */
 .input-box{
     position: relative;
     width: 100%;
@@ -121,6 +157,7 @@ header {
     margin: 30px 0;
 }
 
+/* Estilo para las etiquetas de los campos */
 .input-box label{
     position: absolute;
     top: 50%;
@@ -130,16 +167,28 @@ header {
     color: #fff;
     font-weight: 500;
     pointer-events: none;
+    transition: .5s;
 }
 
+/* Animación para las etiquetas al enfocar o llenar el campo */
+.input-box input:focus~label,
+.input-box input:valid~label{
+    top: -5px;
+}
+
+/* Estilo para los campos de entrada */
 .input-box input{
     width: 100%;
     height: 100%;
     background: transparent;
     border: none;
     outline: none;
+    font-size: 1em;
+    font-weight: 600;
+    padding: 0 35px 0 5px;
 }
 
+/* Estilo para los iconos dentro de los campos */
 .input-box .icon{
     position: absolute;
     right: 8px;
@@ -148,3 +197,43 @@ header {
     line-height: 57px;
 }
 
+/* Estilo para el botón de envío */
+.btn{
+    width: 100%;
+    height: 45px;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #162938;
+    font-weight: 500;
+}
+
+/* Efecto hover para el botón de envío */
+.btn:hover{
+    background: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+/* Estilo para el texto de cambio entre login y registro */
+.login-register{
+    font-size: .9em;
+    font-weight: 500;
+    color: #fff;
+    margin: 25px 0 10px;
+}   
+
+/* Estilo para el enlace de cambio entre login y registro */
+.login-register p a{
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Efecto hover para el enlace de cambio */
+.login-register p a:hover{
+    text-decoration: underline;
+}
