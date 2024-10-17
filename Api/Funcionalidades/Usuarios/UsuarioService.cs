@@ -1,44 +1,96 @@
 using Api.Persistencia;
 using Biblioteca.Dominio;
+using Api.Funcionalidades.Auth;
+using System.Security.Claims;
+using BCrypt.Net;
 
 namespace Api.Funcionalidades.Usuarios;
 
 public class UsuarioService : IUsuarioService
 {
     private readonly AppDbContext _context;
+    private readonly IAuthService _authService;
 
-    public UsuarioService(AppDbContext context)
+    public UsuarioService(AppDbContext context, IAuthService authService)
     {
         _context = context;
-    }   
-    public void AddUsuario(UsuarioDto usuarioDto)
+        _authService = authService;
+    }
+    public void AddUsuario(UsuarioDto usuarioDto, string? contra)
     {
-        var rol = _context.Rol.Find(usuarioDto.RolId);
-        if (rol == null)
+        var contraHash = BCrypt.Net.BCrypt.HashPassword(usuarioDto.Password);
+        if(contra == "123456")
         {
-            throw new ArgumentException("Rol no encontrado");
+            var usuario = new Usuario
+            {
+                Nombre = usuarioDto.Nombre,
+                NombreUsuario = usuarioDto.NombreUsuario,
+                Apellido = usuarioDto.Apellido,
+                Email = usuarioDto.Email,
+                Password = contraHash,
+                Telefono = usuarioDto.Telefono,
+                Rol = _context.Rol.FirstOrDefault(r => r.Nombre == "Vendedor")
+            };
         }
-        var usuario = new Usuario
+        else if(contra == "654321")
         {
-            Nombre = usuarioDto.Nombre,
-            NombreUsuario = usuarioDto.NombreUsuario,
-            Apellido = usuarioDto.Apellido,
-            Email = usuarioDto.Email,
-            Password = usuarioDto.Password,
-            Telefono = usuarioDto.Telefono,
-            Rol = rol
-        };
+            var usuario = new Usuario
+            {
+                Nombre = usuarioDto.Nombre,
+                NombreUsuario = usuarioDto.NombreUsuario,
+                Apellido = usuarioDto.Apellido,
+                Email = usuarioDto.Email,
+                Password = contraHash,
+                Rol = _context.Rol.FirstOrDefault(r => r.Nombre == "Administrador")
+            };
+        }
+        else
+        {
+            var usuario = new Usuario
+            {
+                Nombre = usuarioDto.Nombre,
+                NombreUsuario = usuarioDto.NombreUsuario,
+                Apellido = usuarioDto.Apellido,
+                Email = usuarioDto.Email,
+                Password = contraHash,
+                Rol = _context.Rol.FirstOrDefault(r => r.Nombre == "Usuario")
+            };
+        }
         _context.Usuario.Add(usuario);
         _context.SaveChanges();
     }
 
-    public void DeleteUsuario(Guid id)
+    public void DeleteUsuario(Guid id, string token)
     {
         var usuario = _context.Usuario.Find(id);
-        if (usuario != null)
+        var rol = _authService.ReturnTokenRol(token);
+        var id = _authService.ReturnTokenId(token);
+        if(usuario == null)
         {
-            _context.Usuario.Remove(usuario);
-            _context.SaveChanges();
+            throw new ArgumentException("Usuario no encontrado");
+        }
+        switch (rol)
+        {
+            case "Administrador":
+                _context.Usuario.Remove(usuario);
+                _context.SaveChanges();
+                break;
+            case "Vendedor":
+                if (id == usuario.Id)
+                {
+                    GetUsuario(id);
+                    usuario.Eliminar = true;
+                    _context.SaveChanges();
+                }
+                break;
+            case "Usuario":
+                if (id == usuario.Id)
+                {
+                    GetUsuario(id);
+                    usuario.Eliminar = true;
+                    _context.SaveChanges();
+                }
+                break;
         }
     }
 
@@ -47,11 +99,12 @@ public class UsuarioService : IUsuarioService
         return _context.Usuario.ToList();
     }
 
-    public void UpdateUsuario(Guid id, UsuarioDto usuarioDto)
+    public void UpdateUsuario(Guid id, UsuarioDto usuarioDto, string token)
     {
-        var usuarioExistente = _context.Usuario.Find(id);
-        var rol = _context.Rol.Find(usuarioDto.RolId);
-        if (rol == null)
+        var usuarioExistente = _context.Usuario.Include(u => u.Rol).FirstOrDefault(u => u.Id == id);
+
+        var tokenRol = _authService.ReturnTokenRol(token);
+        if (tokenRol == null)
         {
             throw new ArgumentException("Rol no encontrado");
         }
@@ -63,16 +116,26 @@ public class UsuarioService : IUsuarioService
             usuarioExistente.Email = usuarioDto.Email;
             usuarioExistente.Password = usuarioDto.Password;
             usuarioExistente.Telefono = usuarioDto.Telefono;
-            usuarioExistente.Rol = rol;
             _context.SaveChanges();
         }
+    }
+
+    public bool VerifyPassword(string password, string passwordHash)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+    }
+
+    public object? GetUsuario(Guid id)
+    {
+        return _context.Usuario.Find(id);
     }
 }
 
 public interface IUsuarioService
 {
-    void AddUsuario(UsuarioDto usuarioDto);
-    void DeleteUsuario(Guid id);
+    void AddUsuario(UsuarioDto usuarioDto, string? contra);
+    void DeleteUsuario(Guid id, string token);
     object? GetUsuarios();
-    void UpdateUsuario(Guid id, UsuarioDto usuarioDto);
+    void UpdateUsuario(Guid id, UsuarioDto usuarioDto, string token);
+    bool VerifyPassword(string password, string passwordHash);
 }

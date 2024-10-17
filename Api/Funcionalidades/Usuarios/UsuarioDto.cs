@@ -24,6 +24,5 @@ public class UsuarioDto
     public string Password { get; set; }
     [StringLength(50)]
     public string Telefono { get; set; } = string.Empty;
-    [Required]
-    public Guid RolId { get; set; }
+
 }

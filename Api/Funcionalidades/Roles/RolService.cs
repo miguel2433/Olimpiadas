@@ -90,6 +90,7 @@ public class RolService : IRolService
 
     public void UpdateRol(Guid id, Rol rol)
     {
+        
         var rolExistente = _context.Rol.Find(id);
         if (rolExistente != null)
         {
