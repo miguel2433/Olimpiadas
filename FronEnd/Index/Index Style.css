@@ -1,0 +1,114 @@
+/*Reset de Margenes y Padding*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*Fondo/Cuerpo Principal del Index*/
+body {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    min-height: 100vh;
+    background: #162938;
+    background-size: cover;
+    background-position: center;
+}
+
+/*Diseño del Menu Principal*/
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99;
+}
+
+/*Diseño del Logo*/
+.logo{
+    font-size: 2em;
+    color: #fff;
+    user-select: none;
+}
+
+/*Diseño de la Navegacion*/
+.navigation a{
+    position: relative;
+    font-size: 1.1em;
+    color: #fff;
+    text-decoration: none;
+    margin-left: 40px;
+}
+
+/*Diseño de la Linea de Navegacion*/
+.navigation a::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    transform: scaleX(0);
+    transition: transform .5s;
+}
+
+/*Diseño de la Linea de Navegacion al pasar el cursor por encima*/
+.navigation a:hover::after{
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+/*Diseño del Boton de Inicio de Sesion*/
+.navigation .btmLogin-popup{
+    width: 130px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid #fff;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    color: #fff;
+    font-weight: 500;
+    margin-left: 40px;
+    transition: .5s;
+
+}
+
+/*Diseño del Boton de Inicio de Sesion al pasar el cursor por encima*/
+.navigation .btmLogin-popup:hover{
+    background: #fff;
+    color: #162938;
+}
+
+.wrapper{
+    position: relative;
+    width: 400px;
+    height: 440px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 20px;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wrapper .form-box{
+    width: 100%;
+    padding: 40px;
+}
+
+.form-box h1{
+    font-size: 2em;
+    color: #fff;
+    text-align: center;
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio: E-Commerce</title>
+
+    <!--Compatibilidad con versiones antiguas de IE-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!--Vista móvil-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    
+    <!--Detección de números de teléfono-->
+    <meta name="format-detection" content="telephone=no">
+    
+    <!--Compatibilidad con web apps móviles-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!--Metadatos adicionales-->
+    <meta name="author" content="Leonardo Cheng, Miguel Verdugez, Josu Duran">
+    <meta name="keywords" content="E-Commerce, Tienda Online, Venta en Línea">
+    <meta name="description" content="">
+    
+    <!--Hoja de Personalidad (Diseño de la Pagina)-->
+    <link rel="stylesheet" href="/FronEnd/Index/Index Style.css">
+
+</head>
+<body>
+    <!--Menu Principal-->
+    <header>
+        <!--Logo de la Pagina-->
+        <h1 class="logo"> LOGO </h1>
+        
+        <!--Botones del Menu Principal-->
+        <nav class="navigation">
+            <a href="#">Inicio</a>
+            <a href="#">Mis Compras</a>
+            <a href="#">Vender</a>
+            
+            <!--Boton de las Categorias-->
+            <a href="#">Categorias</a>
+            
+            <!--Boton para ingresar al Login-->
+            <button class="btmLogin-popup">Login</button>
+        </nav>
+    </header>
+
+    <!--Login y SingUp-->
+    <div class="wrapper">
+        <div class="form-box Login">
+            <h1>Login</h1>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="Usuario" required>
+                    <label> Usuario </label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="Contraseña" required>
+                    <label> Contraseña </label>
+                </div>
+                <button type="submit" class="btn"> Login </button>
+                <div class="login-register">
+                    <p>No tener una Cuenta?<a href="#" class="register-link">Registrate</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!--Enlaces a los Scripts de la Pagina-->
+    <script src="/FronEnd/Index/Index Script.js"></script>
+    
+    <!--Iconos de la Pagina-->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
