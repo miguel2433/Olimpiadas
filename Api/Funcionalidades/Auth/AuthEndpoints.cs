@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Carter;
 using Microsoft.AspNetCore.Mvc;
 using Api.Funcionalidades.Auth;
+using Microsoft.AspNetCore.Identity.Data;
 namespace Api.Funcionalidades.Auth
 {
     public class AuthEndpoints : ICarterModule
@@ -18,7 +19,7 @@ namespace Api.Funcionalidades.Auth
                     return Results.BadRequest("El email y la contraseña son obligatorios.");
                 }
 
-                var token = await authService.Login(loginRequest.Email, loginRequest.Password);
+                var token = await authService.Login(loginRequest);
                 if (token == null)
                 {
                     return Results.Unauthorized();

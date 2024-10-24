@@ -7,6 +7,8 @@ using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Api.Funcionalidades.Usuarios;
+using Api.Funcionalidades.Roles;
 
 // Crear el constructor de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
@@ -67,6 +69,12 @@ context.Database.EnsureCreated();
 
 // Construir la aplicación
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    SeedData.Initialize(services);
+}
 
 // Configurar el pipeline de solicitudes HTTP
 if (app.Environment.IsDevelopment())

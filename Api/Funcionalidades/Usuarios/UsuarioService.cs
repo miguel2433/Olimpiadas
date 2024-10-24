@@ -1,8 +1,7 @@
 using Api.Persistencia;
 using Biblioteca.Dominio;
 using Api.Funcionalidades.Auth;
-using System.Security.Claims;
-using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Funcionalidades.Usuarios;
 
@@ -17,11 +16,12 @@ public class UsuarioService : IUsuarioService
         _authService = authService;
     }
     public void AddUsuario(UsuarioDto usuarioDto, string? contra)
-    {
+    {   
+        var usuario = new Usuario();
         var contraHash = BCrypt.Net.BCrypt.HashPassword(usuarioDto.Password);
         if(contra == "123456")
         {
-            var usuario = new Usuario
+            usuario = new Usuario
             {
                 Nombre = usuarioDto.Nombre,
                 NombreUsuario = usuarioDto.NombreUsuario,
@@ -34,7 +34,7 @@ public class UsuarioService : IUsuarioService
         }
         else if(contra == "654321")
         {
-            var usuario = new Usuario
+            usuario = new Usuario
             {
                 Nombre = usuarioDto.Nombre,
                 NombreUsuario = usuarioDto.NombreUsuario,
@@ -46,7 +46,7 @@ public class UsuarioService : IUsuarioService
         }
         else
         {
-            var usuario = new Usuario
+            usuario = new Usuario
             {
                 Nombre = usuarioDto.Nombre,
                 NombreUsuario = usuarioDto.NombreUsuario,
@@ -64,7 +64,7 @@ public class UsuarioService : IUsuarioService
     {
         var usuario = _context.Usuario.Find(id);
         var rol = _authService.ReturnTokenRol(token);
-        var id = _authService.ReturnTokenId(token);
+        var idActual = _authService.ReturnTokenId(token);
         if(usuario == null)
         {
             throw new ArgumentException("Usuario no encontrado");
@@ -79,7 +79,7 @@ public class UsuarioService : IUsuarioService
                 if (id == usuario.Id)
                 {
                     GetUsuario(id);
-                    usuario.Eliminar = true;
+                    usuario.Eliminado = true;
                     _context.SaveChanges();
                 }
                 break;
@@ -87,14 +87,14 @@ public class UsuarioService : IUsuarioService
                 if (id == usuario.Id)
                 {
                     GetUsuario(id);
-                    usuario.Eliminar = true;
+                    usuario.Eliminado = true;
                     _context.SaveChanges();
                 }
                 break;
         }
     }
 
-    public object? GetUsuarios()
+    public List<Usuario> GetUsuarios()
     {
         return _context.Usuario.ToList();
     }
@@ -135,7 +135,7 @@ public interface IUsuarioService
 {
     void AddUsuario(UsuarioDto usuarioDto, string? contra);
     void DeleteUsuario(Guid id, string token);
-    object? GetUsuarios();
+    List<Usuario> GetUsuarios();
     void UpdateUsuario(Guid id, UsuarioDto usuarioDto, string token);
     bool VerifyPassword(string password, string passwordHash);
 }

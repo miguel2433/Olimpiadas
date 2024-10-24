@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Api.Funcionalidades.Usuarios;
 
+
 namespace Api.Funcionalidades.Auth;
 
 public class AuthService : IAuthService
@@ -17,20 +18,23 @@ public class AuthService : IAuthService
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IUsuarioService _usuarioService;
-    public AuthService(AppDbContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUsuarioService usuarioService)
+    public AuthService(AppDbContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
         _configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
-        _usuarioService = usuarioService;
+
+    }
+    public bool VerifyPassword(string password, string passwordHash)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, passwordHash);
     }
 
-    public async Task<string> Login(string email, string password)
+    public async Task<string> Login(LoginRequest loginRequest)
     {
-        var usuario = await _context.Usuario.Include(u => u.Rol).FirstOrDefaultAsync(u => u.Email == email);
+        var usuario = await _context.Usuario.Include(u => u.Rol).FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
 
-        if (usuario == null || _usuarioService.VerifyPassword(password, usuario.Password))
+        if (usuario == null || !VerifyPassword(loginRequest.Password, usuario.Password))
         {
             return null;
         }
@@ -56,6 +60,7 @@ public class AuthService : IAuthService
             Issuer = jwt.Issuer,
             Audience = jwt.Audience
         };
+        
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
@@ -123,5 +128,7 @@ public class AuthService : IAuthService
 
 public interface IAuthService
 {
-    Task<string> Login(string email, string password);
+    Task<string> Login(LoginRequest authDto);
+    string ReturnTokenId(string authorizationHeader);
+    string ReturnTokenRol(string authorizationHeader);
 }

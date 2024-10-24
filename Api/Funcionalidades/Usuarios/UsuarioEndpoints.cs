@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using Biblioteca.Dominio;
 using Carter;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,9 @@ namespace Api.Funcionalidades.Usuarios
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
             
-            group.MapPost("", ([FromServices] IUsuarioService usuarioService, UsuarioDto usuarioDto, [FromHeader(Name = "Authorization")] string authorizationHeader) =>
+            group.MapPost("{contra}", ([FromServices] IUsuarioService usuarioService, UsuarioDto usuarioDto, string contra) =>
             {
-                usuarioService.AddUsuario(usuarioDto, authorizationHeader);
+                usuarioService.AddUsuario(usuarioDto, contra);
                 return Results.Ok(usuarioDto);
             })
             .Produces(StatusCodes.Status200OK)

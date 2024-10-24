@@ -20,12 +20,14 @@ public class RolService : IRolService
 
     public void AddRol(Rol rol)
     {
-        _context. Rol.Add(rol);
+        AuthenticationAdmin();
+        _context.Rol.Add(rol);
         _context.SaveChanges();
     }
 
     public void DeleteRol(Guid id)
     {
+        AuthenticationAdmin();
         var rol = _context.Rol.Find(id);
         if (rol != null)
         {
@@ -35,6 +37,25 @@ public class RolService : IRolService
     }
     public object? GetRoles()
     {
+        AuthenticationAdmin();
+        return _context.Rol.ToList();
+    }
+
+    public void UpdateRol(Guid id, Rol rol)
+    {
+        AuthenticationAdmin();
+        var rolExistente = _context.Rol.Find(id);
+        if (rolExistente != null)
+        {
+            rolExistente.Nombre = rol.Nombre;
+            rolExistente.Descripcion = rol.Descripcion;
+            _context.SaveChanges();
+        }
+    }
+
+    private void AuthenticationAdmin()
+    {
+        
         var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
 
         if (string.IsNullOrEmpty(authorizationHeader))
@@ -74,12 +95,10 @@ public class RolService : IRolService
 
             var rol = rolClaim.Value;
 
-            if (rol.ToLower() != "admin")
+            if (rol != "Administrador")
             {
-                throw new UnauthorizedAccessException("No tienes permisos para obtener la lista de roles.");
+                throw new UnauthorizedAccessException("No tienes permisos");
             }
-
-            return _context.Rol.ToList();
         }
         catch (Exception ex)
         {
@@ -87,18 +106,7 @@ public class RolService : IRolService
             throw new UnauthorizedAccessException($"Error al procesar el token JWT: {ex.Message}");
         }
     }
-
-    public void UpdateRol(Guid id, Rol rol)
-    {
-        
-        var rolExistente = _context.Rol.Find(id);
-        if (rolExistente != null)
-        {
-            rolExistente.Nombre = rol.Nombre;
-            rolExistente.Descripcion = rol.Descripcion;
-            _context.SaveChanges();
-        }
-    }
+    
 }
 
 public interface IRolService
