@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Api.Funcionalidades.Usuarios;
 using Api.Funcionalidades.Roles;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 // Crear el constructor de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,16 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers(); // Agregar soporte para controladores
 builder.Services.AddEndpointsApiExplorer(); // Agregar explorador de endpoints de API
 builder.Services.AddSwaggerGen(); // Agregar generador de documentación Swagge
+
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder
+            .AllowAnyOrigin() // Permitir cualquier origen
+            .AllowAnyMethod() // Permitir cualquier método (GET, POST, etc.)
+            .AllowAnyHeader()); // Permitir cualquier encabezado
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -88,6 +99,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Usar la política de CORS
+app.UseCors("AllowAllOrigins");
 
 // Mapear las rutas definidas con Carter
 app.MapCarter();

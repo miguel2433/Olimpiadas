@@ -1,0 +1,4 @@
+.input-box input:focus ~ label,
+.input-box input:valid ~ label {
+    top: -8px;
+}

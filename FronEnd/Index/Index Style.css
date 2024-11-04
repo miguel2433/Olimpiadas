@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /*Fondo/Cuerpo Principal del Index*/
@@ -220,6 +221,9 @@ header {
 
 /* Estilo para el texto de cambio entre login y registro */
 .login-register{
+    display: flex;
+    text-align: center;
+    flex-direction: column;
     font-size: .9em;
     font-weight: 500;
     color: #fff;
@@ -227,13 +231,13 @@ header {
 }   
 
 /* Estilo para el enlace de cambio entre login y registro */
-.login-register p a{
+.login-register a{
     color: #fff;
     text-decoration: none;
     font-weight: 600;
 }
 
 /* Efecto hover para el enlace de cambio */
-.login-register p a:hover{
+.login-register a:hover{
     text-decoration: underline;
 }
