@@ -6,20 +6,24 @@ namespace Api.Funcionalidades.Categorias;
 public class CategoriaService : ICategoriaService
 {
     private readonly AppDbContext _context;
+    private readonly IAuthService _authService
 
-    public CategoriaService(AppDbContext context)
+    public CategoriaService(AppDbContext context, IAuthService authService)
     {
         _context = context;
+        _authService = authService;
     }
 
     public void AddCategoria(Categoria categoria)
     {
+        _authService.AuthenticationAdministrador();
         _context.Categoria.Add(categoria);
         _context.SaveChanges();
     }
 
     public void DeleteCategoria(Guid id)
     {
+        _authService.AuthenticationAdministrador();
         var categoria = _context.Categoria.Find(id);
         if (categoria != null)
         {
@@ -35,6 +39,7 @@ public class CategoriaService : ICategoriaService
 
     public void UpdateCategoria(Guid id, Categoria categoria)
     {
+        _authService.AuthenticationAdmin();
         var categoriaExistente = _context.Categoria.Find(id);
         if (categoriaExistente != null)
         {
@@ -66,6 +71,7 @@ public class CategoriaService : ICategoriaService
 
     public void ActualizarDescripcionCategoria(Guid id, string descripcion)
     {
+        _authService.AuthenticationAdministrador();
         var categoria = _context.Categoria.Find(id);
         if (categoria != null)
         {

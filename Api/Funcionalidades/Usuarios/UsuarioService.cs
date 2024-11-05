@@ -64,7 +64,6 @@ public class UsuarioService : IUsuarioService
     {
         var usuario = _context.Usuario.Find(id);
         var rol = _authService.ReturnTokenRol(token);
-        var idActual = _authService.ReturnTokenId(token);
         if(usuario == null)
         {
             throw new ArgumentException("Usuario no encontrado");
@@ -76,7 +75,7 @@ public class UsuarioService : IUsuarioService
                 _context.SaveChanges();
                 break;
             case "Vendedor":
-                if (id == usuario.Id)
+                if (_authService.VerificarUsuarioActual(id))
                 {
                     GetUsuario(id);
                     usuario.Eliminado = true;
@@ -84,7 +83,7 @@ public class UsuarioService : IUsuarioService
                 }
                 break;
             case "Usuario":
-                if (id == usuario.Id)
+                if (_authService.VerificarUsuarioActual(id))
                 {
                     GetUsuario(id);
                     usuario.Eliminado = true;
@@ -110,6 +109,13 @@ public class UsuarioService : IUsuarioService
         }
         if (usuarioExistente != null)
         {
+            if(tokenRol == "Usuario" || tokenRol == "Vendedor")
+            {
+                if(!_authService.VerificarUsuarioActual(id))
+                {
+                    throw new UnauthorizedAccessException("No puedes modificar este usuario");
+                }
+            }
             usuarioExistente.Nombre = usuarioDto.Nombre;
             usuarioExistente.NombreUsuario = usuarioDto.NombreUsuario;
             usuarioExistente.Apellido = usuarioDto.Apellido;

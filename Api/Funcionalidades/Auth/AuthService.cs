@@ -244,6 +244,16 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException($"Error al procesar el token JWT: {ex.Message}");
         }
     }
+
+    public bool VerificarUsuarioActual(Guid id)
+    {
+        var idActual = ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+        if (idActual != id)
+        {
+            return false;
+        }
+        return true;
+    }
 }
 
 // Interfaz que define los métodos que debe implementar el servicio de autenticación
@@ -254,4 +264,5 @@ public interface IAuthService
     string ReturnTokenRol(string authorizationHeader);
     void AuthenticationAdmin();
     void AuthenticationVendedoryAdministrador();
+    bool VerificarUsuarioActual(Guid id);
 }

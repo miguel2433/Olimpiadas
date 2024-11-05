@@ -24,6 +24,7 @@ public class CarritoEndpoints : ICarterModule
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
+
         group.MapPut("{id}", ([FromServices] ICarritoService carritoService, Guid id, Carrito carrito) =>
         {
             carritoService.UpdateCarrito(id, carrito);
@@ -31,6 +32,7 @@ public class CarritoEndpoints : ICarterModule
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
+
         group.MapDelete("{id}", ([FromServices] ICarritoService carritoService, Guid id) =>
         {
             carritoService.DeleteCarrito(id);
@@ -38,6 +40,7 @@ public class CarritoEndpoints : ICarterModule
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
+
         group.MapGet("/producto/{id}", ([FromServices] ICarritoService carritoService, Guid id) =>
         {
             var carrito = carritoService.BuscarCarritoPorProducto(id);
@@ -49,6 +52,7 @@ public class CarritoEndpoints : ICarterModule
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
+
         group.MapPut("/{id}/entregado", ([FromServices] ICarritoService carritoService, Guid id) =>
         {
             carritoService.MarcarComoEntregado(id);
@@ -56,6 +60,7 @@ public class CarritoEndpoints : ICarterModule
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
+
         group.MapGet("/{id}/total", ([FromServices] ICarritoService carritoService, Guid id) =>
         {
             var total = carritoService.CalcularTotal(id);
@@ -63,6 +68,7 @@ public class CarritoEndpoints : ICarterModule
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
+
         group.MapPut("/{id}/eliminado", ([FromServices] ICarritoService carritoService, Guid id) =>
         {
             carritoService.MarcarComoEliminado(id);

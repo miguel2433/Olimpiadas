@@ -20,6 +20,7 @@ public class ProductoService : IProductoService
     public void AddProducto(Producto producto)
     {
         _authService.AuthenticationVendedoryAdministrador();
+        producto.VendedorId = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
         _context.Producto.Add(producto);
         _context.SaveChanges();
     }
@@ -27,7 +28,7 @@ public class ProductoService : IProductoService
     public void DeleteProducto(Guid id)
     {
         _authService.AuthenticationVendedoryAdministrador();
-        var vendedorActual = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+        var idActual = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
 
         var producto = _context.Producto.Find(id);
         if (producto != null)
@@ -35,7 +36,12 @@ public class ProductoService : IProductoService
 
             if(vendedorActual != null)
             {
-                if(producto.VendedorId == vendedorActual || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Administrador")
+                if(producto.VendedorId == vendedorActual)
+                {
+                    producto.Eliminado = true;
+                    _context.SaveChanges();
+                }
+                else if( _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Administrador")
                 {
                     _context.Producto.Remove(producto);
                     _context.SaveChanges();
