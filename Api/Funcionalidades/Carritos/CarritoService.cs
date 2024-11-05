@@ -65,8 +65,9 @@ public class CarritoService : ICarritoService
         var carrito = _context.Carrito
             .Include(c => c.Productos)
                 .ThenInclude(p => p.HistorialPrecios)
-            .FirstOrDefault(c => c.Id == id);
-
+            .FirstOrDefault(c => c.Id == id)
+            .Take(1);
+            
         if (carrito == null) return 0;
 
         decimal total = 0;
