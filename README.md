@@ -11,7 +11,7 @@
 
 **Apellido y Nombre Alumno**: Leonardo Cheg, Miguel Verdugues, Josu Duran
 
-**Curso**: 5 ° 7
+**Curso**: 5 ° 7° (el que deja la sesion de git abierta xD)
 
 # Olimpíadas de Programación 2024
 
