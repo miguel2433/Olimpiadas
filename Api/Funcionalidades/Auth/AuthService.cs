@@ -125,8 +125,7 @@ public class AuthService : IAuthService
         }
     }
 
-    // Método para extraer el ID del usuario del token JWT
-    public string ReturnTokenId(string authorizationHeader)
+    public Guid ReturnTokenId(string authorizationHeader)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtToken = tokenHandler.ReadJwtToken(authorizationHeader);
@@ -135,7 +134,115 @@ public class AuthService : IAuthService
         {
             throw new UnauthorizedAccessException("ID no encontrado en el token JWT");
         }
-        return idClaim.Value;
+        return Guid.Parse(idClaim.Value);
+    }
+
+    public void AuthenticationAdmin()
+    {
+        
+        var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+
+        if (string.IsNullOrEmpty(authorizationHeader))
+        {
+            Console.WriteLine("Token JWT no proporcionado");
+            throw new UnauthorizedAccessException("Token JWT no proporcionado");
+        }
+
+        string token;
+        if (authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            token = authorizationHeader.Substring("Bearer ".Length).Trim();
+        }
+        else
+        {
+            token = authorizationHeader.Trim();
+        }
+
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            
+            if (!tokenHandler.CanReadToken(token))
+            {
+                throw new UnauthorizedAccessException("El token proporcionado no es un token JWT válido");
+            }
+
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+
+            var rolClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "role");
+
+            if (rolClaim == null)
+            {
+                throw new UnauthorizedAccessException("Rol no encontrado en el token JWT");
+            }
+
+            var rol = rolClaim.Value;
+
+            if (rol != "Administrador")
+            {
+                throw new UnauthorizedAccessException("No tienes permisos");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al procesar el token: {ex.Message}");
+            throw new UnauthorizedAccessException($"Error al procesar el token JWT: {ex.Message}");
+        }
+    }
+
+    public void AuthenticationVendedoryAdministrador()
+    {
+        
+        var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+
+        if (string.IsNullOrEmpty(authorizationHeader))
+        {
+            Console.WriteLine("Token JWT no proporcionado");
+            throw new UnauthorizedAccessException("Token JWT no proporcionado");
+        }
+
+        string token;
+        if (authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            token = authorizationHeader.Substring("Bearer ".Length).Trim();
+        }
+        else
+        {
+            token = authorizationHeader.Trim();
+        }
+
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            
+            if (!tokenHandler.CanReadToken(token))
+            {
+                throw new UnauthorizedAccessException("El token proporcionado no es un token JWT válido");
+            }
+
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+
+            var rolClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "role");
+
+            if (rolClaim == null)
+            {
+                throw new UnauthorizedAccessException("Rol no encontrado en el token JWT");
+            }
+
+            var rol = rolClaim.Value;
+
+            if (rol != "Administrador" || rol != "Vendedor")
+            {
+                throw new UnauthorizedAccessException("No tienes permisos");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al procesar el token: {ex.Message}");
+            throw new UnauthorizedAccessException($"Error al procesar el token JWT: {ex.Message}");
+        }
     }
 }
 
@@ -143,6 +250,8 @@ public class AuthService : IAuthService
 public interface IAuthService
 {
     Task<string> Login(LoginRequest authDto);
-    string ReturnTokenId(string authorizationHeader);
+    Guid ReturnTokenId(string authorizationHeader);
     string ReturnTokenRol(string authorizationHeader);
+    void AuthenticationAdmin();
+    void AuthenticationVendedoryAdministrador();
 }

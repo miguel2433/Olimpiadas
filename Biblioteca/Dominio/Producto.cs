@@ -13,8 +13,6 @@ public class Producto
     [StringLength(255)]
     public string? Descripcion { get; set; }
     [Required]
-    public decimal Precio { get; set; }
-    [Required]
     public int Stock { get; set; }  
     [StringLength(255)]
     public string? UrlImagen { get; set; }
@@ -23,5 +21,6 @@ public class Producto
     [Required]
     public Usuario Vendedor { get; set; }
     public List<Categoria> Categorias { get; set; } = new List<Categoria>();
+    public List<HistorialPrecio> HistorialPrecios { get; set; } = new List<HistorialPrecio>();
     public bool Eliminado { get; set; } = false;
 }

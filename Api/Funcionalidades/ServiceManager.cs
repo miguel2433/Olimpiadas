@@ -1,5 +1,5 @@
 using Api.Funcionalidades.Carritos;
-using Api.Funcionalidades.HistorialCompras;
+using Api.Funcionalidades.HistorialPrecios;
 using Api.Funcionalidades.Usuarios;
 using Api.Funcionalidades.Productos;
 using Api.Funcionalidades.Categorias;
@@ -16,7 +16,7 @@ public static class ServiceManager
         services.AddScoped<IAuthService, AuthService>(); 
         services.AddScoped<IUsuarioService, UsuarioService>();
         services.AddScoped<IProductoService, ProductoService>();
-        services.AddScoped<IHistorialCompraServices, HistorialCompraServices>();
+        services.AddScoped<IHistorialPrecioServices, HistorialPrecioServices>();
         services.AddScoped<ICategoriaService, CategoriaService>();
         services.AddScoped<IRolService, RolService>();
         return services;

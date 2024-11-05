@@ -1,35 +1,46 @@
 using System.IdentityModel.Tokens.Jwt;
 using Api.Persistencia;
 using Biblioteca.Dominio;
-
+using Api.Funcionalidades.Auth;
 namespace Api.Funcionalidades.Productos;
 
 public class ProductoService : IProductoService
 {
     private readonly AppDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthService _authService;
 
-    public ProductoService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+    public ProductoService(AppDbContext context, IHttpContextAccessor httpContextAccessor, IAuthService authService)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
+        _authService = authService;
     }
 
     public void AddProducto(Producto producto)
     {
-        AuthenticationVendedoryAdministrador();
+        _authService.AuthenticationVendedoryAdministrador();
         _context.Producto.Add(producto);
         _context.SaveChanges();
     }
 
     public void DeleteProducto(Guid id)
     {
-        AuthenticationVendedoryAdministrador();
+        _authService.AuthenticationVendedoryAdministrador();
+        var vendedorActual = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+
         var producto = _context.Producto.Find(id);
         if (producto != null)
         {
-            _context.Producto.Remove(producto);
-            _context.SaveChanges();
+
+            if(vendedorActual != null)
+            {
+                if(producto.VendedorId == vendedorActual || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Administrador")
+                {
+                    _context.Producto.Remove(producto);
+                    _context.SaveChanges();
+                }
+            }
         }
     }
 
@@ -40,68 +51,20 @@ public class ProductoService : IProductoService
 
     public void UpdateProducto(Guid id, Producto producto)
     {
-        AuthenticationVendedoryAdministrador();
+        _authService.AuthenticationVendedoryAdministrador();
+        var vendedorActual = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
         var productoExistente = _context.Producto.Find(id);
         if (productoExistente != null)
         {
-            productoExistente.Nombre = producto.Nombre;
-            productoExistente.Precio = producto.Precio;
-            productoExistente.Stock = producto.Stock;
-            _context.SaveChanges();
-        }
-    }
-
-    private void AuthenticationVendedoryAdministrador()
-    {
-        
-        var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-
-        if (string.IsNullOrEmpty(authorizationHeader))
-        {
-            Console.WriteLine("Token JWT no proporcionado");
-            throw new UnauthorizedAccessException("Token JWT no proporcionado");
-        }
-
-        string token;
-        if (authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-        {
-            token = authorizationHeader.Substring("Bearer ".Length).Trim();
-        }
-        else
-        {
-            token = authorizationHeader.Trim();
-        }
-
-        try
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            
-            if (!tokenHandler.CanReadToken(token))
+            if(vendedorActual != null)
             {
-                throw new UnauthorizedAccessException("El token proporcionado no es un token JWT válido");
+                if(productoExistente.VendedorId == vendedorActual || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Administrador")
+                {
+                    productoExistente.Nombre = producto.Nombre;
+                    productoExistente.Stock = producto.Stock;
+                    _context.SaveChanges();
+                }
             }
-
-            var jwtToken = tokenHandler.ReadJwtToken(token);
-
-
-            var rolClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "role");
-
-            if (rolClaim == null)
-            {
-                throw new UnauthorizedAccessException("Rol no encontrado en el token JWT");
-            }
-
-            var rol = rolClaim.Value;
-
-            if (rol != "Administrador" || rol != "Vendedor")
-            {
-                throw new UnauthorizedAccessException("No tienes permisos");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error al procesar el token: {ex.Message}");
-            throw new UnauthorizedAccessException($"Error al procesar el token JWT: {ex.Message}");
         }
     }
     

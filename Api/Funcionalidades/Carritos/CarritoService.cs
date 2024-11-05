@@ -64,8 +64,26 @@ public class CarritoService : ICarritoService
     {
         var carrito = _context.Carrito
             .Include(c => c.Productos)
+                .ThenInclude(p => p.HistorialPrecios)
             .FirstOrDefault(c => c.Id == id);
-        return carrito?.Productos.Sum(p => p.Precio) ?? 0;
+
+        if (carrito == null) return 0;
+
+        decimal total = 0;
+        foreach (var producto in carrito.Productos)
+        {
+            var precioHistorico = producto.HistorialPrecios
+                .Where(h => h.FechaCambio <= carrito.Fecha)
+                .OrderByDescending(h => h.FechaCambio)
+                .FirstOrDefault();
+
+            if (precioHistorico != null)
+            {
+                total += precioHistorico.Precio;
+            }
+        }
+
+        return total;
     }
 
     public void MarcarComoEliminado(Guid id) //Cambia el estado del carrito a eliminado.No elimina el carrito de la base de datos.

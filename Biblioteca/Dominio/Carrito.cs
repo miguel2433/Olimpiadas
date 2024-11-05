@@ -14,5 +14,7 @@ public class Carrito
     public List<Producto> Productos { get; set; } = new List<Producto>();
     public decimal Total { get; set; }
     public bool Entregado { get; set; } = false;
+    public bool Pagado { get; set; } = false;
     public bool Eliminado { get; set; } = false;
+    public DateTime Fecha { get; set; } = DateTime.Now;
 }

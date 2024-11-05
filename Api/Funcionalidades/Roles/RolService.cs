@@ -5,29 +5,33 @@ using Biblioteca.Dominio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
+using Api.Funcionalidades.Auth;
+
 namespace Api.Funcionalidades.Roles;
 
 public class RolService : IRolService
 {
     private readonly AppDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthService _authService;
 
-    public RolService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+    public RolService(AppDbContext context, IHttpContextAccessor httpContextAccessor, IAuthService authService)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
+        _authService = authService;
     }
 
     public void AddRol(Rol rol)
     {
-        AuthenticationAdmin();
+        _authService.AuthenticationAdmin();
         _context.Rol.Add(rol);
         _context.SaveChanges();
     }
 
     public void DeleteRol(Guid id)
     {
-        AuthenticationAdmin();
+        _authService.AuthenticationAdmin();
         var rol = _context.Rol.Find(id);
         if (rol != null)
         {
@@ -37,73 +41,19 @@ public class RolService : IRolService
     }
     public object? GetRoles()
     {
-        AuthenticationAdmin();
+        _authService.AuthenticationAdmin();
         return _context.Rol.ToList();
     }
 
     public void UpdateRol(Guid id, Rol rol)
     {
-        AuthenticationAdmin();
+        _authService.AuthenticationAdmin();
         var rolExistente = _context.Rol.Find(id);
         if (rolExistente != null)
         {
             rolExistente.Nombre = rol.Nombre;
             rolExistente.Descripcion = rol.Descripcion;
             _context.SaveChanges();
-        }
-    }
-
-    private void AuthenticationAdmin()
-    {
-        
-        var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-
-        if (string.IsNullOrEmpty(authorizationHeader))
-        {
-            Console.WriteLine("Token JWT no proporcionado");
-            throw new UnauthorizedAccessException("Token JWT no proporcionado");
-        }
-
-        string token;
-        if (authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-        {
-            token = authorizationHeader.Substring("Bearer ".Length).Trim();
-        }
-        else
-        {
-            token = authorizationHeader.Trim();
-        }
-
-        try
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            
-            if (!tokenHandler.CanReadToken(token))
-            {
-                throw new UnauthorizedAccessException("El token proporcionado no es un token JWT válido");
-            }
-
-            var jwtToken = tokenHandler.ReadJwtToken(token);
-
-
-            var rolClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "role");
-
-            if (rolClaim == null)
-            {
-                throw new UnauthorizedAccessException("Rol no encontrado en el token JWT");
-            }
-
-            var rol = rolClaim.Value;
-
-            if (rol != "Administrador")
-            {
-                throw new UnauthorizedAccessException("No tienes permisos");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error al procesar el token: {ex.Message}");
-            throw new UnauthorizedAccessException($"Error al procesar el token JWT: {ex.Message}");
         }
     }
     
