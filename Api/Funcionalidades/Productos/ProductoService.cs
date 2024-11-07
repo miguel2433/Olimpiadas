@@ -17,10 +17,36 @@ public class ProductoService : IProductoService
         _authService = authService;
     }
 
-    public void AddProducto(Producto producto)
+    public void AddProducto(ProductoPostDto productoDto)
     {
         _authService.AuthenticationVendedoryAdministrador();
-        producto.VendedorId = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+
+        var producto = new Producto();
+
+        var vendedorId = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+        
+        producto.Nombre = productoDto.Nombre;
+        producto.Stock = productoDto.Stock;
+        producto.UrlImagen = productoDto.UrlImagen;
+        producto.VendedorId = vendedorId;
+        foreach(var categoriaId in productoDto.CategoriaIds)
+        {
+            var categoria = _context.Categoria.Find(categoriaId);
+            if(categoria != null)
+            {
+                producto.Categorias.Add(categoria);
+            }
+            else
+            {
+                throw new Exception("Categoria no encontrada");
+            }
+        }
+
+        var historialPrecio = new HistorialPrecio();
+        historialPrecio.Precio = productoDto.Precio;
+        historialPrecio.FechaCambio = DateTime.Now;
+        
+        producto.HistorialPrecios.Add(historialPrecio);
         _context.Producto.Add(producto);
         _context.SaveChanges();
     }
@@ -55,19 +81,20 @@ public class ProductoService : IProductoService
         return _context.Producto.ToList();
     }
 
-    public void UpdateProducto(Guid id, Producto producto)
+    public void UpdateProducto(ProductoPutDto productoDto)
     {
         _authService.AuthenticationVendedoryAdministrador();
         var vendedorActual = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
-        var productoExistente = _context.Producto.Find(id);
+        var productoExistente = _context.Producto.Find(productoDto.Id);
         if (productoExistente != null)
         {
             if(vendedorActual != null)
             {
                 if(productoExistente.VendedorId == vendedorActual || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Administrador")
                 {
-                    productoExistente.Nombre = producto.Nombre;
-                    productoExistente.Stock = producto.Stock;
+                    productoExistente.Nombre = productoDto.Nombre;
+                    productoExistente.Stock = productoDto.Stock;
+                    productoExistente.UrlImagen = productoDto.UrlImagen;
                     _context.SaveChanges();
                 }
             }
@@ -78,8 +105,8 @@ public class ProductoService : IProductoService
 
 public interface IProductoService
 {
-    void AddProducto(Producto producto);
+    void AddProducto(ProductoPostDto productoDto);
     void DeleteProducto(Guid id);
     object? GetProductos();
-    void UpdateProducto(Guid id, Producto producto);
+    void UpdateProducto(ProductoPutDto productoDto);
 }

@@ -233,7 +233,7 @@ public class AuthService : IAuthService
 
             var rol = rolClaim.Value;
 
-            if (rol != "Administrador" || rol != "Vendedor")
+            if (rol != "Administrador" ^ rol != "Vendedor")
             {
                 throw new UnauthorizedAccessException("No tienes permisos");
             }

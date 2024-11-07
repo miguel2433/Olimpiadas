@@ -18,18 +18,18 @@ namespace Api.Funcionalidades.Productos
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
             
-            group.MapPost("", ([FromServices] IProductoService productoService, Producto producto) =>
+            group.MapPost("", ([FromServices] IProductoService productoService, ProductoPostDto productoDto) =>
             {
-                productoService.AddProducto(producto);
-                return Results.Ok(producto);
+                productoService.AddProducto(productoDto);
+                return Results.Ok(productoDto);
             })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
             
-            group.MapPut("{id}", ([FromServices] IProductoService productoService, Guid id, Producto producto) =>
+            group.MapPut("", ([FromServices] IProductoService productoService, ProductoPutDto productoDto) =>
             {
-                productoService.UpdateProducto(id, producto);
-                return Results.Ok(producto);
+                productoService.UpdateProducto(productoDto);
+                return Results.Ok(productoDto);
             })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
