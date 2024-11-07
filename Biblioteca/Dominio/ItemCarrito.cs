@@ -16,5 +16,7 @@ namespace Biblioteca.Dominio
         [Required]
         [ForeignKey("CarritoId")]
         public Carrito Carrito { get; set; }
+        [Required]
+        public bool Entregado { get; set; } = false;
     }
 }

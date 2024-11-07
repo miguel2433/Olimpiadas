@@ -76,5 +76,22 @@ public class CarritoEndpoints : ICarterModule
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
+
+        group.MapGet("/usuario/{id}", ([FromServices] ICarritoService carritoService, Guid id) =>
+        {
+            var carrito = carritoService.GetCarritoUsuario(id);
+            return Results.Ok(carrito);
+        })
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
+
+        group.MapPut("{id}/pagar", ([FromServices] ICarritoService carritoService, Guid id) =>
+        {
+            carritoService.PagarCarrito(id);
+            return Results.Ok();
+        })
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
     }
+
 }
