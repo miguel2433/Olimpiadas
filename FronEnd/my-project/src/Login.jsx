@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './custom.css';
 
 export default function Login() {
     const [isLogin, setIsLogin] = useState(true);
@@ -102,7 +103,7 @@ export default function Login() {
 
     return (
         <div className="flex justify-center items-center min-h-screen p-4 bg-cyanOscuro">
-            <div className="relative w-96 h-auto bg-transparent border-2 border-white rounded-2xl backdrop-blur-md shadow-lg p-8">
+            <div className="shadow-zinc-900 shadow-xl relative w-96 h-auto bg-transparent border-2 border-white rounded-2xl backdrop-blur-md p-8">
                 <h1 className="text-2xl text-white text-center mb-6">{isLogin ? 'Inicia Sesión' : 'Regístrate'}</h1>
                 <form method="post" onSubmit={handleSubmit}>
                     <div className="mb-4">
@@ -115,6 +116,7 @@ export default function Login() {
                                 className="w-full h-12 bg-transparent text-white focus:outline-none pl-2" 
                                 required 
                             />
+                            <ion-icon style={{ color: 'white' }} name="mail-outline"></ion-icon>
                         </div>
                     </div>
                     <div className="mb-4">
