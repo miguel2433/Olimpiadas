@@ -46,8 +46,9 @@ public class CarritoService : ICarritoService
     public Carrito? BuscarCarritoPorProducto(Guid productoId)
     {
         return _context.Carrito
-            .Include(c => c.Productos)
-            .FirstOrDefault(c => c.Productos.Any(p => p.Id == productoId));
+            .Include(c => c.Items)
+            .ThenInclude(i => i.Producto)
+            .FirstOrDefault(c => c.Items.Any(i => i.Producto.Id == productoId));
     }
 
     public void MarcarComoEntregado(Guid id)//Cambia el estado del carrito a entregado(true).
@@ -63,25 +64,15 @@ public class CarritoService : ICarritoService
     public decimal CalcularTotal(Guid id)
     {
         var carrito = _context.Carrito
-            .Include(c => c.Productos)
-                .ThenInclude(p => p.HistorialPrecios)
-            .FirstOrDefault(c => c.Id == id)
-            .Take(1);
+            .Include(c => c.Items)
+            .FirstOrDefault(c => c.Id == id);
             
         if (carrito == null) return 0;
 
         decimal total = 0;
-        foreach (var producto in carrito.Productos)
+        foreach (var item in carrito.Items)
         {
-            var precioHistorico = producto.HistorialPrecios
-                .Where(h => h.FechaCambio <= carrito.Fecha)
-                .OrderByDescending(h => h.FechaCambio)
-                .FirstOrDefault();
-
-            if (precioHistorico != null)
-            {
-                total += precioHistorico.Precio;
-            }
+            total += item.Subtotal;
         }
 
         return total;

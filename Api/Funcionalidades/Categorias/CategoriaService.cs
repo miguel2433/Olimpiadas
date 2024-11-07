@@ -1,12 +1,12 @@
 using Api.Persistencia;
 using Biblioteca.Dominio;
-
+using Api.Funcionalidades.Auth;
 namespace Api.Funcionalidades.Categorias;
 
 public class CategoriaService : ICategoriaService
 {
     private readonly AppDbContext _context;
-    private readonly IAuthService _authService
+    private readonly IAuthService _authService;
 
     public CategoriaService(AppDbContext context, IAuthService authService)
     {
@@ -16,14 +16,14 @@ public class CategoriaService : ICategoriaService
 
     public void AddCategoria(Categoria categoria)
     {
-        _authService.AuthenticationAdministrador();
+        _authService.AuthenticationAdmin();
         _context.Categoria.Add(categoria);
         _context.SaveChanges();
     }
 
     public void DeleteCategoria(Guid id)
     {
-        _authService.AuthenticationAdministrador();
+        _authService.AuthenticationAdmin();
         var categoria = _context.Categoria.Find(id);
         if (categoria != null)
         {
@@ -71,7 +71,7 @@ public class CategoriaService : ICategoriaService
 
     public void ActualizarDescripcionCategoria(Guid id, string descripcion)
     {
-        _authService.AuthenticationAdministrador();
+        _authService.AuthenticationAdmin();
         var categoria = _context.Categoria.Find(id);
         if (categoria != null)
         {

@@ -34,9 +34,9 @@ public class ProductoService : IProductoService
         if (producto != null)
         {
 
-            if(vendedorActual != null)
+            if(idActual != null)
             {
-                if(producto.VendedorId == vendedorActual)
+                if(producto.VendedorId == idActual)
                 {
                     producto.Eliminado = true;
                     _context.SaveChanges();

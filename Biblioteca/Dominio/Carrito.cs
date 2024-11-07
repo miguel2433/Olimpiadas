@@ -11,7 +11,7 @@ public class Carrito
     public Guid UsuarioId { get; set; }
     [Required]
     public Usuario Usuario { get; set; }
-    public List<Producto> Productos { get; set; } = new List<Producto>();
+    public List<ItemCarrito> Items { get; set; } = new List<ItemCarrito>();
     public decimal Total { get; set; }
     public bool Entregado { get; set; } = false;
     public bool Pagado { get; set; } = false;

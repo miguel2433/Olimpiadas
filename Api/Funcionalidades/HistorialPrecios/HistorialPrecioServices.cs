@@ -1,5 +1,7 @@
 using Api.Persistencia;
 using Biblioteca.Dominio;
+using Api.Funcionalidades.Auth;
+
 namespace Api.Funcionalidades.HistorialPrecios;
 
 public class HistorialPrecioServices : IHistorialPrecioServices

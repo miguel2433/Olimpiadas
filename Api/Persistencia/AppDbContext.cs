@@ -11,7 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<Categoria> Categoria { get; set; }
     public DbSet<HistorialPrecio> HistorialPrecio { get; set; }
     public DbSet<Rol> Rol { get; set; }
-    
+    public DbSet<ItemCarrito> ItemCarrito { get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
@@ -24,6 +24,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Rol>().ToTable("Rol");
         modelBuilder.Entity<HistorialPrecio>().ToTable("HistorialPrecio");
         modelBuilder.Entity<Categoria>().ToTable("Categoria");
+        modelBuilder.Entity<ItemCarrito>().ToTable("ItemCarrito");
     }
 
 }
