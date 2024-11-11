@@ -11,25 +11,25 @@ namespace Api.Funcionalidades.ItemCarritos
             var group = app.MapGroup("/api/item-carrito")
                 .WithTags("Item Carrito");
 
-            group.MapGet("", ([FromServices] IItemCarritoServices itemCarritoService) =>
+            group.MapGet("", ([FromServices] IItemCarritoServices itemCarritoService, Guid carritoId) =>
             {
-                return Results.Ok(itemCarritoService.GetItemCarrito());
+                return Results.Ok(itemCarritoService.GetItemCarritoPorCarritoId(carritoId));
             })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
 
-            group.MapPost("", ([FromServices] IItemCarritoServices itemCarritoService, ItemCarrito itemCarrito) =>
+            group.MapPost("", ([FromServices] IItemCarritoServices itemCarritoService, ItemCarritoDto itemCarritoDto) =>
             {
-                itemCarritoService.AddItemCarrito(itemCarrito);
-                return Results.Ok(itemCarrito);
+                itemCarritoService.AddItemCarrito(itemCarritoDto);
+                return Results.Ok(itemCarritoDto);
             })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
             
-            group.MapPut("{id}", ([FromServices] IItemCarritoServices itemCarritoService, ItemCarrito itemCarrito) =>
+            group.MapPut("{id}", ([FromServices] IItemCarritoServices itemCarritoService, ItemCarritoDto itemCarritoDto) =>
             {
-                itemCarritoService.UpdateItemCarrito(itemCarrito);
-                return Results.Ok(itemCarrito);
+                itemCarritoService.UpdateItemCarrito(itemCarritoDto);
+                return Results.Ok(itemCarritoDto);
             })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);

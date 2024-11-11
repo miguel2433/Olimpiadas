@@ -42,7 +42,13 @@ public class CarritoService : ICarritoService
 
     public List<Carrito> GetCarrito()
     {
-        return _context.Carrito.ToList();
+        var rol = _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+        if(rol == "Administrador")
+        {
+            return _context.Carrito.ToList();
+        }
+        var id = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+        return _context.Carrito.Where(c => c.UsuarioId == id).ToList();
     }
 
     public void UpdateCarrito(Guid id, Carrito carrito)

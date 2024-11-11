@@ -127,9 +127,14 @@ public class AuthService : IAuthService
 
     public Guid ReturnTokenId(string authorizationHeader)
     {
+        if(!new JwtSecurityTokenHandler().CanReadToken(authorizationHeader))
+        {
+            throw new UnauthorizedAccessException("El token proporcionado no es un token JWT válido");
+        }
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtToken = tokenHandler.ReadJwtToken(authorizationHeader);
-        var idClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "nameidentifier");
+        var idClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "nameid");
         if (idClaim == null)
         {
             throw new UnauthorizedAccessException("ID no encontrado en el token JWT");
@@ -233,9 +238,12 @@ public class AuthService : IAuthService
 
             var rol = rolClaim.Value;
 
-            if (rol != "Administrador" ^ rol != "Vendedor")
+            if (rol != "Administrador")
             {
-                throw new UnauthorizedAccessException("No tienes permisos");
+                if(rol != "Vendedor")
+                {
+                    throw new UnauthorizedAccessException("No tienes permisos");
+                }
             }
         }
         catch (Exception ex)

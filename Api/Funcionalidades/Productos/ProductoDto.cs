@@ -16,8 +16,7 @@ namespace Api.Funcionalidades.Productos
         public int Stock { get; set; }
         [StringLength(255)]
         public string? UrlImagen { get; set; }
-        [Required]
-        public List<Guid> CategoriaIds { get; set; }
+        public List<Guid>? CategoriaIds { get; set; } = new List<Guid>();
         [Required]
         public decimal Precio { get; set; }
     }

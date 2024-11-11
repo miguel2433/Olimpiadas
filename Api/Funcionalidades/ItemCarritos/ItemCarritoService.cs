@@ -22,40 +22,123 @@ namespace Api.Funcionalidades.ItemCarritos
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public List<ItemCarrito> GetItemCarrito()
+        public List<ItemCarritoSelectDto> GetItemCarritoPorCarritoId(Guid carritoId)
         {
-            _authService.AuthenticationAdmin();
-            return _context.ItemCarrito.ToList();
+            var id = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+            var rol = _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+            var carrito = _context.Carrito.AsNoTracking().Include(c => c.Items).FirstOrDefault(c => c.Id == carritoId);
+            if(carrito == null)
+            {
+                throw new ArgumentException("Carrito no encontrado");
+            }
+            if(rol == "Administrador")
+            {
+                return carrito.Items.Select(i => new ItemCarritoSelectDto
+                {
+                    Id = i.Id,
+                    ProductoId = null,
+                    Cantidad = i.Cantidad,
+                    Subtotal = i.Subtotal,
+                    Entregado = i.Entregado
+                }).ToList();
+            }
+            return carrito.Items.Where(i => i.Carrito.UsuarioId == id).Select(i => new ItemCarritoSelectDto
+            {
+                Id = i.Id,
+                ProductoId = null,
+                Cantidad = i.Cantidad,
+                Subtotal = i.Subtotal,
+                Entregado = i.Entregado
+            }).ToList();
         }
 
-        public void AddItemCarrito(ItemCarrito itemCarrito)
+        public void AddItemCarrito(ItemCarritoDto itemCarritoDto)
         {
+
+            var itemCarrito = new ItemCarrito();
+            if(itemCarritoDto.Cantidad <= 0)
+            {
+                throw new ArgumentException("La cantidad debe ser mayor a 0");
+            }
+            
+            var carrito = new Carrito();
+            if(itemCarritoDto.CarritoId != Guid.Empty)
+            {
+                carrito = _context.Carrito.FirstOrDefault(c => c.Id == itemCarritoDto.CarritoId);
+                if(carrito == null)
+                {
+                    throw new ArgumentException("Carrito no encontrado");
+                }
+            }
+            else
+            {
+                carrito = new Carrito { UsuarioId = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) };
+                _context.Carrito.Add(carrito);
+            }
+            
+            itemCarrito.Carrito = carrito;
+
             if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != itemCarrito.Carrito.UsuarioId)
             {
                 throw new UnauthorizedAccessException("No puedes agregar un item a un carrito que no es tuyo");
             }
 
-            var producto = _context.Producto.Include(p => p.HistorialPrecios.OrderByDescending(h => h.FechaCambio).FirstOrDefault()).FirstOrDefault(p => p.Id == itemCarrito.Producto.Id);
+            var producto = _context.Producto.Include(p => p.HistorialPrecios).FirstOrDefault(p => p.Id == itemCarritoDto.ProductoId);
             if(producto == null)
             {
                 throw new ArgumentException("Producto no encontrado");
+            }
+            itemCarrito.Producto = producto;
+
+            var historialPrecio = producto.HistorialPrecios.OrderByDescending(h => h.FechaCambio).FirstOrDefault();
+            if(historialPrecio == null)
+            {
+                throw new ArgumentException("No hay historial de precios para el producto");
+            }
+            if(producto.Stock < itemCarrito.Cantidad)
+            {
+                throw new ArgumentException("No hay suficiente stock para agregar al carrito");
+            }
+            itemCarrito.Subtotal = historialPrecio.Precio * itemCarritoDto.Cantidad;
+            _context.ItemCarrito.Add(itemCarrito);
+            _context.SaveChanges();
+        }
+
+        public void UpdateItemCarrito(ItemCarritoDto itemCarritoDto)
+        {
+            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != itemCarritoDto.CarritoId || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
+            {
+                throw new UnauthorizedAccessException("No puedes actualizar un item de un carrito que no es tuyo");
+            }
+            var itemCarrito = _context.ItemCarrito.Include(i => i.Producto).FirstOrDefault(i => i.Id == itemCarritoDto.Id);
+            if(itemCarrito == null)
+            {
+                throw new ArgumentException("Item no encontrado");
+            }
+            if(itemCarritoDto.Cantidad <= 0)
+            {
+                throw new ArgumentException("La cantidad debe ser mayor a 0");
+            }
+            itemCarrito.Cantidad = itemCarritoDto.Cantidad;
+
+            var producto = _context.Producto.Include(p => p.HistorialPrecios).FirstOrDefault(p => p.Id == itemCarrito.Producto.Id);
+            if(producto == null)
+            {
+                throw new ArgumentException("Producto no encontrado");
+            }
+
+            var historialPrecio = producto.HistorialPrecios.OrderByDescending(h => h.FechaCambio).FirstOrDefault();
+            if(historialPrecio == null)
+            {
+                throw new ArgumentException("No hay historial de precios para el producto");
             }
             if(producto.Stock < itemCarrito.Cantidad)
             {
                 throw new ArgumentException("No hay suficiente stock para agregar al carrito");
             }
 
-            itemCarrito.Subtotal = producto.HistorialPrecios.OrderByDescending(h => h.FechaCambio).FirstOrDefault().Precio * itemCarrito.Cantidad;
-            _context.ItemCarrito.Add(itemCarrito);
-            _context.SaveChanges();
-        }
-
-        public void UpdateItemCarrito(ItemCarrito itemCarrito)
-        {
-            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != itemCarrito.Carrito.UsuarioId || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["rol"].ToString()) != "Administrador")
-            {
-                throw new UnauthorizedAccessException("No puedes actualizar un item de un carrito que no es tuyo");
-            }
+            itemCarrito.Subtotal = historialPrecio.Precio * itemCarritoDto.Cantidad;
+            itemCarrito.Cantidad = itemCarritoDto.Cantidad;
             _context.ItemCarrito.Update(itemCarrito);
             _context.SaveChanges();
         }
@@ -137,9 +220,9 @@ namespace Api.Funcionalidades.ItemCarritos
 
     public interface IItemCarritoServices
     {
-        List<ItemCarrito> GetItemCarrito();
-        void AddItemCarrito(ItemCarrito itemCarrito);
-        void UpdateItemCarrito(ItemCarrito itemCarrito);
+        List<ItemCarritoSelectDto> GetItemCarritoPorCarritoId(Guid carritoId);
+        void AddItemCarrito(ItemCarritoDto itemCarritoDto);
+        void UpdateItemCarrito(ItemCarritoDto itemCarritoDto);
         void DeleteItemCarrito(Guid id);
         List<ItemCarrito> GetProductosVendedorId(Guid id);
         void MarcarComoEntregadoItem(Guid id);
