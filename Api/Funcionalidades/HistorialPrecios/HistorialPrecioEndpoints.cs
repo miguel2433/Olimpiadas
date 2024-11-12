@@ -11,30 +11,30 @@ namespace Api.Funcionalidades.HistorialPrecios
             var group = app.MapGroup("/api/historial-precio")
                 .WithTags("Historial de Precios");
 
-            group.MapGet("", ([FromServices] IHistorialPrecioServices historialPrecioService) =>
+            group.MapGet("{id}", ([FromServices] IHistorialPrecioServices historialPrecioService, Guid id) =>
             {
-                return Results.Ok(historialPrecioService.GetHistorialPrecio());
+                return Results.Ok(historialPrecioService.GetHistorialPrecio(id));
             })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
 
-            group.MapPost("", ([FromServices] IHistorialPrecioServices historialPrecioService, HistorialPrecio historialPrecio) =>
+            group.MapPost("", ([FromServices] IHistorialPrecioServices historialPrecioService, HistorialPrecioDto historialPrecioDto) =>
             {
-                historialPrecioService.AddHistorialPrecio(historialPrecio);
-                return Results.Ok(historialPrecio);
+                historialPrecioService.AddHistorialPrecio(historialPrecioDto);
+                return Results.Ok(historialPrecioDto);
             })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
             
-            group.MapPut("{id}", ([FromServices] IHistorialPrecioServices historialPrecioService, int id, HistorialPrecio historialPrecio) =>
+            group.MapPut("{id}", ([FromServices] IHistorialPrecioServices historialPrecioService, Guid id, HistorialPrecioUpdateDto historialPrecioDto) =>
             {
-                historialPrecioService.UpdateHistorialPrecio(id, historialPrecio);
-                return Results.Ok(historialPrecio);
+                historialPrecioService.UpdateHistorialPrecio(id, historialPrecioDto);
+                return Results.Ok(historialPrecioDto);
             })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
             
-            group.MapDelete("{id}", ([FromServices] IHistorialPrecioServices historialPrecioService, int id) =>
+            group.MapDelete("{id}", ([FromServices] IHistorialPrecioServices historialPrecioService, Guid id) =>
             {
                 historialPrecioService.DeleteHistorialPrecio(id);
                 return Results.Ok();

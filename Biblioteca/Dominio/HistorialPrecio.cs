@@ -7,7 +7,7 @@ namespace Biblioteca.Dominio;
 public class HistorialPrecio
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     [Required]
     public decimal Precio { get; set; }
     [Required]
