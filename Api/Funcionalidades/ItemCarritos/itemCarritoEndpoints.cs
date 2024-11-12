@@ -26,9 +26,9 @@ namespace Api.Funcionalidades.ItemCarritos
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
             
-            group.MapPut("{id}", ([FromServices] IItemCarritoServices itemCarritoService, ItemCarritoDto itemCarritoDto) =>
+            group.MapPut("{id}", ([FromServices] IItemCarritoServices itemCarritoService, ItemCarritoUpdateDto itemCarritoDto, Guid id) =>
             {
-                itemCarritoService.UpdateItemCarrito(itemCarritoDto);
+                itemCarritoService.UpdateItemCarrito(itemCarritoDto, id);
                 return Results.Ok(itemCarritoDto);
             })
             .Produces(StatusCodes.Status200OK)

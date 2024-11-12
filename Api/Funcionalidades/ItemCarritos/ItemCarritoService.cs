@@ -88,6 +88,10 @@ namespace Api.Funcionalidades.ItemCarritos
             {
                 throw new ArgumentException("Producto no encontrado");
             }
+            if(producto.Stock < itemCarritoDto.Cantidad)
+            {
+                throw new ArgumentException("No hay suficiente stock para agregar al carrito");
+            }
             itemCarrito.Producto = producto;
 
             var historialPrecio = producto.HistorialPrecios.OrderByDescending(h => h.FechaCambio).FirstOrDefault();
@@ -104,17 +108,23 @@ namespace Api.Funcionalidades.ItemCarritos
             _context.SaveChanges();
         }
 
-        public void UpdateItemCarrito(ItemCarritoDto itemCarritoDto)
+        public void UpdateItemCarrito(ItemCarritoUpdateDto itemCarritoDto, Guid id)
         {
-            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != itemCarritoDto.CarritoId || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
-            {
-                throw new UnauthorizedAccessException("No puedes actualizar un item de un carrito que no es tuyo");
-            }
-            var itemCarrito = _context.ItemCarrito.Include(i => i.Producto).FirstOrDefault(i => i.Id == itemCarritoDto.Id);
+
+            var itemCarrito = _context.ItemCarrito.Include(i => i.Producto).Include(i => i.Carrito).FirstOrDefault(i => i.Id == id);
             if(itemCarrito == null)
             {
                 throw new ArgumentException("Item no encontrado");
             }
+
+            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != itemCarrito.Carrito.UsuarioId)
+            {
+                if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
+                {
+                    throw new UnauthorizedAccessException("No puedes actualizar un item de un carrito que no es tuyo");
+                }
+            }
+
             if(itemCarritoDto.Cantidad <= 0)
             {
                 throw new ArgumentException("La cantidad debe ser mayor a 0");
@@ -146,7 +156,7 @@ namespace Api.Funcionalidades.ItemCarritos
         public void DeleteItemCarrito(Guid id)
         {
             var carrito = _context.Carrito.Include(c => c.Items).ThenInclude(i => i.Producto).FirstOrDefault(c => c.Items.Any(i => i.Id == id));
-            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != carrito.UsuarioId || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["rol"].ToString()) != "Administrador")
+            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != carrito.UsuarioId || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
             {
                 throw new UnauthorizedAccessException("No puedes eliminar un item de un carrito que no es tuyo");
             }
@@ -202,9 +212,12 @@ namespace Api.Funcionalidades.ItemCarritos
             {
                 throw new ArgumentException("Item no encontrado");
             }
-            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != item.Producto.VendedorId || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
+            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != item.Producto.VendedorId)
             {
-                throw new UnauthorizedAccessException("No puedes rechazar un item si no es tuyo");
+                if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
+                {
+                    throw new UnauthorizedAccessException("No puedes rechazar un item si no es tuyo");
+                }
             }
 
             if(item.Entregado)
@@ -222,7 +235,7 @@ namespace Api.Funcionalidades.ItemCarritos
     {
         List<ItemCarritoSelectDto> GetItemCarritoPorCarritoId(Guid carritoId);
         void AddItemCarrito(ItemCarritoDto itemCarritoDto);
-        void UpdateItemCarrito(ItemCarritoDto itemCarritoDto);
+        void UpdateItemCarrito(ItemCarritoUpdateDto itemCarritoDto, Guid id);
         void DeleteItemCarrito(Guid id);
         List<ItemCarrito> GetProductosVendedorId(Guid id);
         void MarcarComoEntregadoItem(Guid id);
