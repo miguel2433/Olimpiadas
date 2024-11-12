@@ -7,17 +7,24 @@ public class CategoriaService : ICategoriaService
 {
     private readonly AppDbContext _context;
     private readonly IAuthService _authService;
-
-    public CategoriaService(AppDbContext context, IAuthService authService)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    public CategoriaService(AppDbContext context, IAuthService authService, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
         _authService = authService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public void AddCategoria(Categoria categoria)
+    public void AddCategoria(CategoriaUpdateDto categoria)
     {
         _authService.AuthenticationAdmin();
-        _context.Categoria.Add(categoria);
+        var categoriaEntity = new Categoria
+        {
+            Nombre = categoria.Nombre,
+            Descripcion = categoria.Descripcion
+        };
+        
+        _context.Categoria.Add(categoriaEntity);
         _context.SaveChanges();
     }
 
@@ -32,18 +39,39 @@ public class CategoriaService : ICategoriaService
         }
     }
 
-    public List<Categoria> GetCategorias()
+    public List<CategoriaDto> GetCategorias()
     {
-        return _context.Categoria.ToList();
+        if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString()) == "Administrador")
+        {
+            return _context.Categoria.Select(c => new CategoriaDto
+            {
+                Id = c.Id,
+                Nombre = c.Nombre,
+                Descripcion = c.Descripcion,
+                Productos = c.Productos.Select(p => p.Id).ToList(),
+                Eliminado = c.Eliminado
+            }).ToList();
+        }
+        return _context.Categoria.Where(c => !c.Eliminado).Select(c => new CategoriaDto
+        {
+            Id = c.Id,
+            Nombre = c.Nombre,
+            Descripcion = c.Descripcion,
+            Productos = c.Productos.Select(p => p.Id).ToList()
+        }).ToList();
     }
 
-    public void UpdateCategoria(Guid id, Categoria categoria)
+    public void UpdateCategoria(Guid id, CategoriaUpdateDto categoria)
     {
         _authService.AuthenticationAdmin();
         var categoriaExistente = _context.Categoria.Find(id);
         if (categoriaExistente != null)
         {
-            _context.Categoria.Update(categoria);
+            categoriaExistente.Nombre = categoria.Nombre;
+            if(categoria.Descripcion != null)
+            {
+                categoriaExistente.Descripcion = categoria.Descripcion;
+            }
             _context.SaveChanges();
         }
     }
@@ -84,10 +112,10 @@ public class CategoriaService : ICategoriaService
 
 public interface ICategoriaService
 {
-    void AddCategoria(Categoria categoria);
-    void UpdateCategoria(Guid id, Categoria categoria);
+    void AddCategoria(CategoriaUpdateDto categoria);
+    void UpdateCategoria(Guid id, CategoriaUpdateDto categoria);
     void DeleteCategoria(Guid id);
-    List<Categoria> GetCategorias();
+    List<CategoriaDto> GetCategorias();
     List<Categoria> BuscarCategoriasPorNombre(string nombre);
     void MarcarCategoriaComoEliminada(Guid id);
     List<Producto> ObtenerProductosDeCategoria(Guid id);

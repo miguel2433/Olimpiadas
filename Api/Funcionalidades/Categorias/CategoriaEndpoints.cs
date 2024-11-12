@@ -17,7 +17,7 @@ public class CategoriaEndpoints : ICarterModule
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
 
-        group.MapPost("", ([FromServices] ICategoriaService categoriaService, Categoria categoria) =>
+        group.MapPost("", ([FromServices] ICategoriaService categoriaService, CategoriaUpdateDto categoria) =>
         {
             categoriaService.AddCategoria(categoria);
             return Results.Ok(categoria);
@@ -25,7 +25,7 @@ public class CategoriaEndpoints : ICarterModule
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
         
-        group.MapPut("{id}", ([FromServices] ICategoriaService categoriaService, Guid id, Categoria categoria) =>
+        group.MapPut("{id}", ([FromServices] ICategoriaService categoriaService, Guid id, CategoriaUpdateDto categoria) =>
         {
             categoriaService.UpdateCategoria(id, categoria);
             return Results.Ok(categoria);
