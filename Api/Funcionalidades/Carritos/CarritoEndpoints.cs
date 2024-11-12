@@ -12,23 +12,7 @@ public class CarritoEndpoints : ICarterModule
 
         group.MapGet("", ([FromServices] ICarritoService carritoService) =>
         {
-            return Results.Ok(carritoService.GetCarrito());
-        })
-        .Produces(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status401Unauthorized);
-
-        group.MapPost("", ([FromServices] ICarritoService carritoService, Carrito carrito) =>
-        {
-            carritoService.AddCarrito(carrito);
-            return Results.Ok(carrito);
-        })
-        .Produces(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status401Unauthorized);
-
-        group.MapPut("{id}", ([FromServices] ICarritoService carritoService, Guid id, Carrito carrito) =>
-        {
-            carritoService.UpdateCarrito(id, carrito);
-            return Results.Ok(carrito);
+            return Results.Ok(carritoService.GetCarritoPorUsuario());
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
@@ -73,14 +57,6 @@ public class CarritoEndpoints : ICarterModule
         {
             carritoService.MarcarComoEliminado(id);
             return Results.Ok();
-        })
-        .Produces(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status401Unauthorized);
-
-        group.MapGet("/usuario/{id}", ([FromServices] ICarritoService carritoService, Guid id) =>
-        {
-            var carrito = carritoService.GetCarritoUsuario(id);
-            return Results.Ok(carrito);
         })
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);

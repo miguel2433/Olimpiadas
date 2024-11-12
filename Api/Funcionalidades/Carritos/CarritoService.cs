@@ -16,66 +16,85 @@ public class CarritoService : ICarritoService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public void AddCarrito(Carrito carrito)
-    {
-        if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Vendedor")
-        {
-            throw new UnauthorizedAccessException("No tienes permisos para agregar un carrito");
-        }
-        _context.Carrito.Add(carrito);
-        _context.SaveChanges();
-    }
-
     public void DeleteCarrito(Guid id)
     {
-        if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Vendedor")
-        {
-            throw new UnauthorizedAccessException("No tienes permisos para eliminar un carrito");
-        }
         var carrito = _context.Carrito.Find(id);
         if (carrito != null)
         {
+            if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != carrito.UsuarioId)
+            {
+                if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
+                {
+                    throw new UnauthorizedAccessException("No puedes eliminar un carrito que no sea tuyo");
+                }
+            }
             _context.Carrito.Remove(carrito);
             _context.SaveChanges();
         }
     }
 
-    public List<Carrito> GetCarrito()
+    public List<CarritoDto> GetCarritoPorUsuario()
     {
         var rol = _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
         if(rol == "Administrador")
         {
-            return _context.Carrito.ToList();
+            return _context.Carrito.Include(c => c.Items).Select(c => new CarritoDto
+            {
+                Id = c.Id,
+                UsuarioId = c.UsuarioId,
+                Entregado = c.Entregado,
+                Pagado = c.Pagado,
+                Eliminado = c.Eliminado,
+                Items = c.Items.Select(i => i.Id).ToList()
+            }).ToList();
         }
         var id = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
-        return _context.Carrito.Where(c => c.UsuarioId == id).ToList();
+        return _context.Carrito.Include(c => c.Items).Where(c => c.UsuarioId == id && !c.Eliminado).Select(c => new CarritoDto
+        {
+            Id = c.Id,
+            UsuarioId = c.UsuarioId,
+            Entregado = c.Entregado,
+            Pagado = c.Pagado,
+            Eliminado = c.Eliminado,
+            Items = c.Items.Select(i => i.Id).ToList()
+        }).ToList();
     }
 
-    public void UpdateCarrito(Guid id, Carrito carrito)
+
+    public List<CarritoDto> BuscarCarritoPorProducto(Guid productoId)
     {
-        if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Vendedor")
+        var rol = _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
+        if(rol == "Administrador")
         {
-            throw new UnauthorizedAccessException("No tienes permisos para actualizar un carrito");
+            return _context.Carrito
+                .Include(c => c.Items)
+                .ThenInclude(i => i.Producto)
+                .Where(c => c.Items.Any(i => i.Producto.Id == productoId))
+                .Select(c => new CarritoDto
+                {
+                Id = c.Id,
+                UsuarioId = c.UsuarioId,
+                Entregado = c.Entregado,
+                Pagado = c.Pagado,
+                Eliminado = c.Eliminado,
+                Items = c.Items.Select(i => i.Id).ToList()
+            }).ToList();
         }
 
-        if(carrito.UsuarioId != _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) || _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
-        {
-            throw new UnauthorizedAccessException("No puedes actualizar un carrito que no sea tuyo");
-        }
-        var carritoExistente = _context.Carrito.Find(id);
-        if (carritoExistente != null)
-        {
-            _context.Carrito.Update(carrito);
-            _context.SaveChanges();
-        }
-    }
-
-    public Carrito? BuscarCarritoPorProducto(Guid productoId)
-    {
+        var id = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
         return _context.Carrito
             .Include(c => c.Items)
             .ThenInclude(i => i.Producto)
-            .FirstOrDefault(c => c.Items.Any(i => i.Producto.Id == productoId));
+            .Where(c => c.Items.Any(i => i.Producto.Id == productoId && c.UsuarioId == id) && !c.Eliminado)
+            .Select(c => new CarritoDto
+            {
+                Id = c.Id,
+                UsuarioId = c.UsuarioId,
+                Entregado = c.Entregado,
+                Pagado = c.Pagado,
+                Eliminado = c.Eliminado,
+                Items = c.Items.Select(i => i.Id).ToList()
+            }).ToList();
     }
 
     public void MarcarComoEntregado(Guid id)//Cambia el estado del carrito a entregado(true).
@@ -84,11 +103,18 @@ public class CarritoService : ICarritoService
         var carrito = _context.Carrito.Find(id);
         if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != carrito.UsuarioId )
         {
-            throw new UnauthorizedAccessException("No puedes marcar un carrito como entregado si no es tuyo");
+            if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
+            {
+                throw new UnauthorizedAccessException("No puedes marcar un carrito como entregado si no es tuyo");
+            }
         }
 
         if (carrito != null)
         {
+            if(carrito.Eliminado)
+            {
+                throw new ArgumentException("Carrito eliminado");
+            }
             carrito.Entregado = true;
             _context.SaveChanges();
         }
@@ -114,34 +140,31 @@ public class CarritoService : ICarritoService
     public void MarcarComoEliminado(Guid id) //Cambia el estado del carrito a eliminado.No elimina el carrito de la base de datos.
     {
         var carrito = _context.Carrito.Find(id);
+        if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != carrito.UsuarioId )
+        {
+            if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
+            {
+                throw new UnauthorizedAccessException("No puedes marcar un carrito como eliminado si no es tuyo");
+            }
+        }
+
         if (carrito != null)
         {
+            if(carrito.Pagado)
+            {
+                throw new ArgumentException("Carrito pagado");
+            }
+            if(carrito.Eliminado)
+            {
+                throw new ArgumentException("Carrito eliminado");
+            }
+            if(carrito.Entregado)
+            {
+                throw new ArgumentException("Carrito entregado");
+            }
             carrito.Eliminado = true;
             _context.SaveChanges();
         }
-    }
-
-    public List<Carrito> GetCarritoUsuario(Guid id)
-    {
-        if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) == "Vendedor")
-        {
-            throw new UnauthorizedAccessException("No tienes permisos para ver los carritos de los usuarios");
-        }
-        return _context.Carrito.Include(c => c.Usuario).Where(c => c.UsuarioId == id).ToList();
-    }
-
-    public Carrito GetCarritoUsuarioId(Guid id)
-    {
-        var carrito = _context.Carrito.Include(c => c.Usuario).FirstOrDefault(c => c.Id == id);
-        if(carrito == null)
-        {
-            throw new ArgumentException("Carrito no encontrado");
-        }
-        if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != carrito.UsuarioId)
-        {
-            throw new UnauthorizedAccessException("No puedes ver un carrito que no sea tuyo");
-        }
-        return carrito;
     }
 
     public void PagarCarrito(Guid id)
@@ -182,23 +205,19 @@ public class CarritoService : ICarritoService
             }
             producto.Stock -= item.Cantidad;
         }
+        carrito.Total = CalcularTotal(id);
         _context.SaveChanges();
     }
-
 
 }
 
 public interface ICarritoService
 {
-    void AddCarrito(Carrito carrito);
     void DeleteCarrito(Guid id);
-    List<Carrito> GetCarrito();
-    void UpdateCarrito(Guid id, Carrito carrito);
-    Carrito? BuscarCarritoPorProducto(Guid id);
+    List<CarritoDto> GetCarritoPorUsuario();
+    List<CarritoDto> BuscarCarritoPorProducto(Guid id);
     void MarcarComoEntregado(Guid id);
     decimal CalcularTotal(Guid id);
     void MarcarComoEliminado(Guid id);
-    List<Carrito> GetCarritoUsuario(Guid id);
-    Carrito GetCarritoUsuarioId(Guid id);
     void PagarCarrito(Guid id);
 }
