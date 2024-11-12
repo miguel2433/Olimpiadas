@@ -104,6 +104,7 @@ namespace Api.Funcionalidades.ItemCarritos
                 throw new ArgumentException("No hay suficiente stock para agregar al carrito");
             }
             itemCarrito.Subtotal = historialPrecio.Precio * itemCarritoDto.Cantidad;
+            itemCarrito.Cantidad = itemCarritoDto.Cantidad;
             _context.ItemCarrito.Add(itemCarrito);
             _context.SaveChanges();
         }

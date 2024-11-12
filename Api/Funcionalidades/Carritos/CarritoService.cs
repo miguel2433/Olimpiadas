@@ -194,7 +194,8 @@ public class CarritoService : ICarritoService
 
         foreach (var item in carrito.Items)
         {
-            var producto = _context.Producto.Find(item.Producto.Id);
+            Console.WriteLine(item.Producto.Id);
+            var producto = item.Producto;
             if(producto == null)
             {
                 throw new ArgumentException("Producto no encontrado");
@@ -203,7 +204,9 @@ public class CarritoService : ICarritoService
             {
                 throw new ArgumentException("Stock insuficiente");
             }
+            Console.WriteLine(producto.Stock);
             producto.Stock -= item.Cantidad;
+            Console.WriteLine(producto.Stock);
         }
         carrito.Total = CalcularTotal(id);
         _context.SaveChanges();
