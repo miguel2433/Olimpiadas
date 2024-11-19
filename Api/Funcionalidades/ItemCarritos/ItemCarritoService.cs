@@ -10,11 +10,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Funcionalidades.ItemCarritos
 {
+    /// <summary>
+    /// Servicio que maneja la lógica de negocio para los items del carrito de compras
+    /// </summary>
     public class ItemCarritoService : IItemCarritoServices
     {
-        private readonly AppDbContext _context;
-        private readonly IAuthService _authService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        // Dependencias inyectadas
+        private readonly AppDbContext _context;                     // Contexto de base de datos
+        private readonly IAuthService _authService;                // Servicio de autenticación
+        private readonly IHttpContextAccessor _httpContextAccessor; // Acceso al contexto HTTP
+
+        /// <summary>
+        /// Constructor que inicializa las dependencias necesarias
+        /// </summary>
         public ItemCarritoService(AppDbContext context, IAuthService authService, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
@@ -22,6 +30,11 @@ namespace Api.Funcionalidades.ItemCarritos
             _httpContextAccessor = httpContextAccessor;
         }
 
+        /// <summary>
+        /// Obtiene los items de un carrito específico
+        /// </summary>
+        /// <param name="carritoId">ID del carrito a consultar</param>
+        /// <returns>Lista de items del carrito</returns>
         public List<ItemCarritoSelectDto> GetItemCarritoPorCarritoId(Guid carritoId)
         {
             var id = _authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
@@ -52,6 +65,12 @@ namespace Api.Funcionalidades.ItemCarritos
             }).ToList();
         }
 
+        /// <summary>
+        /// Agrega un nuevo item al carrito
+        /// </summary>
+        /// <param name="itemCarritoDto">Datos del item a agregar</param>
+        /// <exception cref="ArgumentException">Si el producto no existe o no hay stock suficiente</exception>
+        /// <exception cref="UnauthorizedAccessException">Si el usuario no tiene permisos</exception>
         public void AddItemCarrito(ItemCarritoDto itemCarritoDto)
         {
 
@@ -109,6 +128,11 @@ namespace Api.Funcionalidades.ItemCarritos
             _context.SaveChanges();
         }
 
+        /// <summary>
+        /// Actualiza la cantidad de un item en el carrito
+        /// </summary>
+        /// <param name="itemCarritoDto">Nuevos datos del item</param>
+        /// <param name="id">ID del item a actualizar</param>
         public void UpdateItemCarrito(ItemCarritoUpdateDto itemCarritoDto, Guid id)
         {
 
@@ -154,6 +178,10 @@ namespace Api.Funcionalidades.ItemCarritos
             _context.SaveChanges();
         }
 
+        /// <summary>
+        /// Elimina un item del carrito
+        /// </summary>
+        /// <param name="id">ID del item a eliminar</param>
         public void DeleteItemCarrito(Guid id)
         {
             var carrito = _context.Carrito.Include(c => c.Items).ThenInclude(i => i.Producto).FirstOrDefault(c => c.Items.Any(i => i.Id == id));
@@ -182,6 +210,11 @@ namespace Api.Funcionalidades.ItemCarritos
             _context.SaveChanges();
         }
         
+        /// <summary>
+        /// Obtiene los productos de un vendedor específico
+        /// </summary>
+        /// <param name="id">ID del vendedor</param>
+        /// <returns>Lista de items del carrito asociados al vendedor</returns>
         public List<ItemCarrito> GetProductosVendedorId(Guid id)
         {
             _authService.AuthenticationVendedoryAdministrador();
@@ -191,6 +224,10 @@ namespace Api.Funcionalidades.ItemCarritos
             throw new UnauthorizedAccessException("No tienes permisos para ver los productos de un vendedor");
         }
 
+        /// <summary>
+        /// Marca un item como entregado
+        /// </summary>
+        /// <param name="id">ID del item</param>
         public void MarcarComoEntregadoItem(Guid id)
         {
             var item = _context.ItemCarrito.Include(i => i.Producto).FirstOrDefault(i => i.Id == id);
@@ -206,6 +243,10 @@ namespace Api.Funcionalidades.ItemCarritos
             _context.SaveChanges();
         }
 
+        /// <summary>
+        /// Rechaza un item del carrito y restaura el stock
+        /// </summary>
+        /// <param name="id">ID del item</param>
         public void RechazarItem(Guid id)
         {
             var item = _context.ItemCarrito.Include(i => i.Producto).FirstOrDefault(i => i.Id == id);
@@ -232,6 +273,9 @@ namespace Api.Funcionalidades.ItemCarritos
         }
     }
 
+    /// <summary>
+    /// Interfaz que define los métodos del servicio de items del carrito
+    /// </summary>
     public interface IItemCarritoServices
     {
         List<ItemCarritoSelectDto> GetItemCarritoPorCarritoId(Guid carritoId);
