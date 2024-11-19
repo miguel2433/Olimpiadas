@@ -4,11 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Api.Funcionalidades.Auth;
 namespace Api.Funcionalidades.Carritos;
 
+// Esta clase implementa la lógica de negocio relacionada con los carritos
+// Gestiona todas las operaciones CRUD y validaciones de carritos
 public class CarritoService : ICarritoService
 {
+    // Dependencias inyectadas para acceso a datos y servicios de autenticación
     private readonly AppDbContext _context;
     private readonly IAuthService _authService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+
+    // Constructor que inicializa las dependencias
     public CarritoService(AppDbContext context, IAuthService authService, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
@@ -16,6 +21,7 @@ public class CarritoService : ICarritoService
         _httpContextAccessor = httpContextAccessor;
     }
 
+    // Elimina un carrito si el usuario tiene permisos
     public void DeleteCarrito(Guid id)
     {
         var carrito = _context.Carrito.Find(id);
@@ -33,6 +39,7 @@ public class CarritoService : ICarritoService
         }
     }
 
+    // Obtiene los carritos del usuario actual o todos si es administrador
     public List<CarritoDto> GetCarritoPorUsuario()
     {
         var rol = _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
@@ -60,7 +67,7 @@ public class CarritoService : ICarritoService
         }).ToList();
     }
 
-
+    // Busca carritos que contengan un producto específico
     public List<CarritoDto> BuscarCarritoPorProducto(Guid productoId)
     {
         var rol = _authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString());
@@ -97,6 +104,7 @@ public class CarritoService : ICarritoService
             }).ToList();
     }
 
+    // Marca un carrito como entregado si el usuario tiene permisos
     public void MarcarComoEntregado(Guid id)//Cambia el estado del carrito a entregado(true).
     {
 
@@ -120,6 +128,7 @@ public class CarritoService : ICarritoService
         }
     }
 
+    // Calcula el total del carrito sumando los subtotales de sus items
     public decimal CalcularTotal(Guid id)
     {
         var carrito = _context.Carrito
@@ -137,6 +146,7 @@ public class CarritoService : ICarritoService
         return total;
     }
 
+    // Marca un carrito como eliminado (soft delete)
     public void MarcarComoEliminado(Guid id) //Cambia el estado del carrito a eliminado.No elimina el carrito de la base de datos.
     {
         var carrito = _context.Carrito.Find(id);
@@ -167,6 +177,7 @@ public class CarritoService : ICarritoService
         }
     }
 
+    // Procesa el pago del carrito y actualiza el stock de productos
     public void PagarCarrito(Guid id)
     {
         var carrito = _context.Carrito.Include(c => c.Items).ThenInclude(i => i.Producto).FirstOrDefault(c => c.Id == id);
@@ -214,6 +225,7 @@ public class CarritoService : ICarritoService
 
 }
 
+// Interfaz que define los métodos que debe implementar el servicio de carritos
 public interface ICarritoService
 {
     void DeleteCarrito(Guid id);
