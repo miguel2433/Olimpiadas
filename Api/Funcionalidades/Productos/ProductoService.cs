@@ -29,6 +29,7 @@ public class ProductoService : IProductoService
         producto.Stock = productoDto.Stock;
         producto.UrlImagen = productoDto.UrlImagen;
         producto.VendedorId = vendedorId;
+        
         foreach(var categoriaId in productoDto.CategoriaIds)
         {
             var categoria = _context.Categoria.Find(categoriaId);

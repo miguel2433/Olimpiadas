@@ -1,15 +1,19 @@
-using Api.Persistencia;
-using Biblioteca.Dominio;
-using Api.Funcionalidades.Auth;
+// Importaciones necesarias para el funcionamiento del servicio
+using Api.Persistencia; // Para acceder a la base de datos
+using Biblioteca.Dominio; // Para usar las entidades del dominio
+using Api.Funcionalidades.Auth; // Para la autenticación
 
 namespace Api.Funcionalidades.HistorialPrecios;
 
+// Clase principal que implementa la interfaz IHistorialPrecioServices
 public class HistorialPrecioServices : IHistorialPrecioServices
 {
-    private readonly AppDbContext _context;
-    private readonly IAuthService _authService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    // Inyección de dependencias
+    private readonly AppDbContext _context; // Contexto de base de datos
+    private readonly IAuthService _authService; // Servicio de autenticación
+    private readonly IHttpContextAccessor _httpContextAccessor; // Acceso al contexto HTTP
 
+    // Constructor que inicializa las dependencias
     public HistorialPrecioServices(AppDbContext context, IAuthService authService, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
@@ -17,6 +21,8 @@ public class HistorialPrecioServices : IHistorialPrecioServices
         _httpContextAccessor = httpContextAccessor;
     }
 
+    // Método para agregar un nuevo historial de precio
+    // Solo vendedores y administradores pueden agregar
     public void AddHistorialPrecio(HistorialPrecioDto historialPrecioDto)
     {
         _authService.AuthenticationVendedoryAdministrador();
@@ -25,6 +31,7 @@ public class HistorialPrecioServices : IHistorialPrecioServices
         {
             throw new ArgumentException("Producto no encontrado");
         }
+        // Verifica que el usuario sea el vendedor del producto o un administrador
         if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != producto.VendedorId)
         {
             if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
@@ -32,6 +39,7 @@ public class HistorialPrecioServices : IHistorialPrecioServices
                 throw new UnauthorizedAccessException("No puedes ver el historial de precios de un producto que no es tuyo");
             }
         }
+        // Crea y guarda el nuevo historial de precio
         var historialPrecio = new HistorialPrecio
         {
             ProductoId = historialPrecioDto.ProductoId,
@@ -42,6 +50,8 @@ public class HistorialPrecioServices : IHistorialPrecioServices
         _context.SaveChanges();
     }
 
+    // Método para eliminar un historial de precio
+    // Solo el vendedor del producto o un administrador pueden eliminar
     public void DeleteHistorialPrecio(Guid id)
     {
         _authService.AuthenticationVendedoryAdministrador();
@@ -51,6 +61,7 @@ public class HistorialPrecioServices : IHistorialPrecioServices
         {
             throw new ArgumentException("Producto no encontrado");
         }
+        // Verifica permisos
         if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != producto.VendedorId)
         {
             if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
@@ -65,6 +76,8 @@ public class HistorialPrecioServices : IHistorialPrecioServices
         }
     }
 
+    // Método para obtener el historial de precios de un producto
+    // Solo el vendedor del producto o un administrador pueden ver el historial
     public List<HistorialPrecioGetDto> GetHistorialPrecio(Guid productoId)
     {
         _authService.AuthenticationVendedoryAdministrador();
@@ -73,6 +86,7 @@ public class HistorialPrecioServices : IHistorialPrecioServices
         {
             throw new ArgumentException("Producto no encontrado");
         }
+        // Verifica permisos
         if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != producto.VendedorId)
         {
             if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
@@ -80,6 +94,7 @@ public class HistorialPrecioServices : IHistorialPrecioServices
                 throw new UnauthorizedAccessException("No puedes ver el historial de precios de un producto que no es tuyo");
             }
         }
+        // Retorna lista de historiales convertida a DTO
         return _context.HistorialPrecio.Select(h => new HistorialPrecioGetDto
         {
             Id = h.Id,
@@ -89,6 +104,15 @@ public class HistorialPrecioServices : IHistorialPrecioServices
         }).Where(h => h.ProductoId == productoId).ToList();
     }
 
+    // Método para actualizar un historial de precio
+    // Solo el vendedor del producto o un administrador pueden actualizar
+    
+    // Explicacion:
+    // Este método actualiza un historial de precio existente.
+    // Primero, autentica que el usuario sea un vendedor o administrador.
+    // Luego, busca el historial de precio existente en la base de datos usando el ID proporcionado.
+    // Después, busca el producto asociado a ese historial de precio.
+    // Si el producto no se encuentra, lanza una excepción indicando que el producto no fue encontrado.
     public void UpdateHistorialPrecio(Guid id, HistorialPrecioUpdateDto historialPrecioDto)
     {
         _authService.AuthenticationVendedoryAdministrador();
@@ -98,6 +122,7 @@ public class HistorialPrecioServices : IHistorialPrecioServices
         {
             throw new ArgumentException("Producto no encontrado");
         }
+        // Verifica permisos
         if(_authService.ReturnTokenId(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != producto.VendedorId)
         {
             if(_authService.ReturnTokenRol(_httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()) != "Administrador")
@@ -114,10 +139,11 @@ public class HistorialPrecioServices : IHistorialPrecioServices
     }
 }
     
+// Interfaz que define los métodos que debe implementar el servicio
 public interface IHistorialPrecioServices
 {
-    List<HistorialPrecioGetDto> GetHistorialPrecio(Guid productoId);
-    void AddHistorialPrecio(HistorialPrecioDto historialPrecioDto);
-    void UpdateHistorialPrecio(Guid id, HistorialPrecioUpdateDto historialPrecioDto);
-    void DeleteHistorialPrecio(Guid id);
+    List<HistorialPrecioGetDto> GetHistorialPrecio(Guid productoId); // Obtener historial
+    void AddHistorialPrecio(HistorialPrecioDto historialPrecioDto); // Agregar historial
+    void UpdateHistorialPrecio(Guid id, HistorialPrecioUpdateDto historialPrecioDto); // Actualizar historial
+    void DeleteHistorialPrecio(Guid id); // Eliminar historial
 }
