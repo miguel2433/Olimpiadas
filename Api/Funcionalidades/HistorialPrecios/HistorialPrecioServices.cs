@@ -25,6 +25,7 @@ public class HistorialPrecioServices : IHistorialPrecioServices
     // Solo vendedores y administradores pueden agregar
     public void AddHistorialPrecio(HistorialPrecioDto historialPrecioDto)
     {
+        // Verificación de autenticación y autorización
         _authService.AuthenticationVendedoryAdministrador();
         var producto = _context.Producto.Find(historialPrecioDto.ProductoId);
         if(producto == null)
