@@ -9,12 +9,18 @@ using Api.Funcionalidades.Auth;
 
 namespace Api.Funcionalidades.Roles;
 
+/// <summary>
+/// Servicio que gestiona las operaciones relacionadas con roles en el sistema
+/// </summary>
 public class RolService : IRolService
 {
     private readonly AppDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAuthService _authService;
 
+    /// <summary>
+    /// Constructor del servicio de roles
+    /// </summary>
     public RolService(AppDbContext context, IHttpContextAccessor httpContextAccessor, IAuthService authService)
     {
         _context = context;
@@ -22,6 +28,9 @@ public class RolService : IRolService
         _authService = authService;
     }
 
+    /// <summary>
+    /// Agrega un nuevo rol al sistema. Solo administradores pueden realizar esta acción
+    /// </summary>
     public void AddRol(Rol rol)
     {
         _authService.AuthenticationAdmin();

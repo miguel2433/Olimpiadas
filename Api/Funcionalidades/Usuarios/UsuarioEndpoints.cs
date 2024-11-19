@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Funcionalidades.Usuarios
 {
+    /// <summary>
+    /// Clase que define los endpoints HTTP para la gestión de usuarios
+    /// </summary>
     public class UsuarioEndpoints : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)

@@ -4,6 +4,9 @@ using Biblioteca.Dominio;
 using Api.Funcionalidades.Auth;
 namespace Api.Funcionalidades.Productos;
 
+/// <summary>
+/// Servicio que implementa la lógica de negocio para el manejo de productos
+/// </summary>
 public class ProductoService : IProductoService
 {
     private readonly AppDbContext _context;
@@ -17,6 +20,11 @@ public class ProductoService : IProductoService
         _authService = authService;
     }
 
+    /// <summary>
+    /// Agrega un nuevo producto al sistema
+    /// </summary>
+    /// <param name="productoDto">Datos del producto a crear</param>
+    /// <exception cref="Exception">Si la categoría no existe</exception>
     public void AddProducto(ProductoPostDto productoDto)
     {
         _authService.AuthenticationVendedoryAdministrador();
@@ -52,6 +60,14 @@ public class ProductoService : IProductoService
         _context.SaveChanges();
     }
 
+    /// <summary>
+    /// Elimina un producto del sistema
+    /// </summary>
+    /// <param name="id">ID del producto a eliminar</param>
+    /// <remarks>
+    /// Si el usuario es vendedor, marca el producto como eliminado
+    /// Si el usuario es administrador, elimina físicamente el producto
+    /// </remarks>
     public void DeleteProducto(Guid id)
     {
         _authService.AuthenticationVendedoryAdministrador();
@@ -77,11 +93,19 @@ public class ProductoService : IProductoService
         }
     }
 
+    /// <summary>
+    /// Obtiene la lista de todos los productos
+    /// </summary>
+    /// <returns>Lista de productos</returns>
     public object? GetProductos()
     {
         return _context.Producto.ToList();
     }
 
+    /// <summary>
+    /// Actualiza la información de un producto existente
+    /// </summary>
+    /// <param name="productoDto">Nuevos datos del producto</param>
     public void UpdateProducto(ProductoPutDto productoDto)
     {
         _authService.AuthenticationVendedoryAdministrador();

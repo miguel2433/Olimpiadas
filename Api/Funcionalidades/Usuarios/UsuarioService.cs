@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Funcionalidades.Usuarios;
 
+/// <summary>
+/// Servicio que implementa la lógica de negocio para la gestión de usuarios
+/// </summary>
 public class UsuarioService : IUsuarioService
 {
     private readonly AppDbContext _context;
@@ -15,6 +18,11 @@ public class UsuarioService : IUsuarioService
         _context = context;
         _authService = authService;
     }
+    /// <summary>
+    /// Agrega un nuevo usuario al sistema
+    /// </summary>
+    /// <param name="usuarioDto">Datos del usuario</param>
+    /// <param name="contra">Contraseña especial para asignar rol</param>
     public void AddUsuario(UsuarioDto usuarioDto, string? contra)
     {   
         var usuario = new Usuario();
@@ -60,6 +68,11 @@ public class UsuarioService : IUsuarioService
         _context.SaveChanges();
     }
 
+    /// <summary>
+    /// Elimina un usuario del sistema
+    /// </summary>
+    /// <param name="id">ID del usuario a eliminar</param>
+    /// <param name="token">Token de autorización</param>
     public void DeleteUsuario(Guid id, string token)
     {
         var usuario = _context.Usuario.Find(id);
