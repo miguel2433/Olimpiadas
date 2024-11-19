@@ -52,7 +52,7 @@ Para desplegar este proyecto, sigue estos pasos:
 
 La API estará disponible en `https://localhost:5001` por defecto.
 
-### Pre-requisitos 📋
+## Pre-requisitos 📋
 
 Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
